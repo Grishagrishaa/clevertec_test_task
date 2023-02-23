@@ -3,6 +3,8 @@ package ru.clevertec.clevertecTaskRest.dao.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "SaleCard", schema = "shop")
 public class SaleCard extends BaseEntity{
@@ -49,5 +51,18 @@ public class SaleCard extends BaseEntity{
         public SaleCard build(){
             return new SaleCard(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SaleCard saleCard = (SaleCard) o;
+        return Objects.equals(year, saleCard.year) && Objects.equals(salePercentage, saleCard.salePercentage);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(year, salePercentage);
     }
 }

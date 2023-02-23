@@ -6,6 +6,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Validated
@@ -129,5 +130,18 @@ public class Product extends BaseEntity{
         public Product build(){
             return new Product(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(name, product.name) && Objects.equals(manufacturer, product.manufacturer) && Objects.equals(expirationDate, product.expirationDate) && Objects.equals(weight, product.weight) && Objects.equals(cost, product.cost) && Objects.equals(count, product.count);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, manufacturer, expirationDate, weight, cost, count);
     }
 }
