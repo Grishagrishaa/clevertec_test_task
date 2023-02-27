@@ -39,7 +39,7 @@ public class IShopServiceImpl implements IShopService {
     @Override
     @Transactional
     public Receipt getReceipt(List<Long> ids) {
-        ArrayList<ReadProductDto> products = buyProducts(ids);
+        List<ReadProductDto> products = buyProducts(ids);
 
         double sum = products.stream()
                 .mapToDouble(ReadProductDto::getCost)
@@ -96,7 +96,7 @@ public class IShopServiceImpl implements IShopService {
         return myPage;
     }
 
-    @Transactional
+    @Transactional//connot be private due annotation
     ArrayList<ReadProductDto> buyProducts(List<Long> ids) {
         ArrayList<ReadProductDto> products = new ArrayList<>();
         for (Long id : ids) {

@@ -2,6 +2,7 @@ package ru.clevertec.clevertecTaskRest.controllers.pagination;
 
 
 import java.util.List;
+import java.util.Objects;
 
 public class MyPage<T>{
     private Integer number;
@@ -165,5 +166,32 @@ public class MyPage<T>{
         public MyPage<T> build(){
             return new MyPage<>(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MyPage<?> myPage = (MyPage<?>) o;
+        return Objects.equals(number, myPage.number) && Objects.equals(size, myPage.size) && Objects.equals(totalPages, myPage.totalPages) && Objects.equals(totalElements, myPage.totalElements) && Objects.equals(first, myPage.first) && Objects.equals(numberOfElements, myPage.numberOfElements) && Objects.equals(last, myPage.last) && Objects.equals(content, myPage.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(number, size, totalPages, totalElements, first, numberOfElements, last, content);
+    }
+
+    @Override
+    public String toString() {
+        return "MyPage{" +
+                "number=" + number +
+                ", size=" + size +
+                ", totalPages=" + totalPages +
+                ", totalElements=" + totalElements +
+                ", first=" + first +
+                ", numberOfElements=" + numberOfElements +
+                ", last=" + last +
+                ", content=" + content +
+                '}';
     }
 }

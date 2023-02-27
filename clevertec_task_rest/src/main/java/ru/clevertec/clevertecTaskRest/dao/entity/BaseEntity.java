@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)// CANT BE USED DURING TESTS IN H2 DB
     private Long id;
     @CreatedDate
     private LocalDateTime createdDate;
@@ -24,21 +24,21 @@ public abstract class BaseEntity {
         return this;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
     public BaseEntity setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
         return this;
     }
 
-    public LocalDateTime getUpdatedDate() {
-        return updatedDate;
-    }
-
     public BaseEntity setUpdatedDate(LocalDateTime updatedDate) {
         this.updatedDate = updatedDate;
         return this;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public LocalDateTime getUpdatedDate() {
+        return updatedDate;
     }
 }
