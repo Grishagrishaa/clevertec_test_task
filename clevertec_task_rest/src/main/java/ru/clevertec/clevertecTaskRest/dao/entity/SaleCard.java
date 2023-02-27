@@ -15,6 +15,7 @@ public class SaleCard extends BaseEntity{
     }
 
     public SaleCard(Builder builder) {
+        setId(builder.id);
         this.year = builder.year;
         this.salePercentage = builder.salePercentage;
     }
@@ -27,11 +28,27 @@ public class SaleCard extends BaseEntity{
         return salePercentage;
     }
 
+    public SaleCard setYear(Long year) {
+        this.year = year;
+        return this;
+    }
+
+    public SaleCard setSalePercentage(Integer salePercentage) {
+        this.salePercentage = salePercentage;
+        return this;
+    }
+
     public static class Builder{
+        private Long id;
         private Long year;
         private Integer salePercentage;
 
         private Builder() {
+        }
+
+        public Builder setId(Long id) {
+            this.id = id;
+            return this;
         }
 
         public Builder setYear(Long year) {
@@ -64,5 +81,13 @@ public class SaleCard extends BaseEntity{
     @Override
     public int hashCode() {
         return Objects.hash(year, salePercentage);
+    }
+
+    @Override
+    public String toString() {
+        return "SaleCard{" +
+                "year=" + year +
+                ", salePercentage=" + salePercentage +
+                '}';
     }
 }

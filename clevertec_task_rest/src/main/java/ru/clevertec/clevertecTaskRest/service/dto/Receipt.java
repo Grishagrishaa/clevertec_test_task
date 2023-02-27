@@ -1,6 +1,7 @@
 package ru.clevertec.clevertecTaskRest.service.dto;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Receipt {
     private final List<ReadProductDto> products;
@@ -48,5 +49,26 @@ public class Receipt {
         public Receipt build(){
             return new Receipt(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Receipt receipt = (Receipt) o;
+        return Objects.equals(products, receipt.products) && Objects.equals(totalSum, receipt.totalSum);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(products, totalSum);
+    }
+
+    @Override
+    public String toString() {
+        return "Receipt{" +
+                "products=" + products +
+                ", totalSum=" + totalSum +
+                '}';
     }
 }

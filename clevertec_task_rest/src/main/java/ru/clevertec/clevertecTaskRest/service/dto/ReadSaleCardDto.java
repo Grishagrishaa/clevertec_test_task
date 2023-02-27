@@ -1,6 +1,8 @@
 package ru.clevertec.clevertecTaskRest.service.dto;
 
 
+import java.util.Objects;
+
 public class ReadSaleCardDto {
     private final Long id;
     private final Long number;
@@ -60,5 +62,27 @@ public class ReadSaleCardDto {
         public ReadSaleCardDto build(){
             return new ReadSaleCardDto(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ReadSaleCardDto that = (ReadSaleCardDto) o;
+        return Objects.equals(id, that.id) && Objects.equals(number, that.number) && Objects.equals(salePercentage, that.salePercentage);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, number, salePercentage);
+    }
+
+    @Override
+    public String toString() {
+        return "ReadSaleCardDto{" +
+                "id=" + id +
+                ", number=" + number +
+                ", salePercentage=" + salePercentage +
+                '}';
     }
 }
