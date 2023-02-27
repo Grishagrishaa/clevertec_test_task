@@ -2,7 +2,6 @@ package ru.clevertec.clevertecTaskRest.service;
 
 import ru.clevertec.clevertecTaskRest.controllers.pagination.MyPage;
 import ru.clevertec.clevertecTaskRest.dao.entity.Product;
-import ru.clevertec.clevertecTaskRest.dao.entity.SaleCard;
 import ru.clevertec.clevertecTaskRest.service.api.IProductService;
 import ru.clevertec.clevertecTaskRest.service.api.ISaleCardService;
 import ru.clevertec.clevertecTaskRest.service.api.IShopService;
@@ -55,7 +54,7 @@ public class IShopServiceImpl implements IShopService {
     @Transactional
     public Receipt getReceipt(List<Long> ids, Long saleCardId) {
         ArrayList<ReadProductDto> products = buyProducts(ids);
-        SaleCard saleCard = saleCardService.getSaleCardById(saleCardId);
+        ru.clevertec.clevertecTaskRest.dao.entity.SaleCard saleCard = saleCardService.getSaleCardById(saleCardId);
 
         double sum = products.stream()
                   .mapToDouble(ReadProductDto::getCost)
@@ -83,7 +82,7 @@ public class IShopServiceImpl implements IShopService {
 
     @Override
     public MyPage<ReadSaleCardDto> getAllSaleCards(Pageable pageable) {
-        Page<SaleCard> springPage = saleCardService.getAllSaleCards(pageable);
+        Page<ru.clevertec.clevertecTaskRest.dao.entity.SaleCard> springPage = saleCardService.getAllSaleCards(pageable);
 
         List<ReadSaleCardDto> readSaleCardDtoList = springPage.getContent()
                 .stream()

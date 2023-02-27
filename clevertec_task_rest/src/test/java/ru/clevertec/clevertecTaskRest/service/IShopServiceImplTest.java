@@ -17,7 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import ru.clevertec.clevertecTaskRest.controllers.pagination.MyPage;
 import ru.clevertec.clevertecTaskRest.dao.entity.BaseEntity;
 import ru.clevertec.clevertecTaskRest.dao.entity.Product;
-import ru.clevertec.clevertecTaskRest.dao.entity.SaleCard;
 import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
 import ru.clevertec.clevertecTaskRest.service.dto.ReadSaleCardDto;
 import ru.clevertec.clevertecTaskRest.service.dto.Receipt;
@@ -97,7 +96,7 @@ class IShopServiceImplTest {
 
         @ParameterizedTest
         @MethodSource("ru.clevertec.clevertecTaskRest.service.IShopServiceImplTest#provideProductsWithPositiveCountAndSaleCard")
-        void shouldReturnReceiptWithExistedProductsIdAndSaleCard(List<Product> testProducts, SaleCard saleCard){
+        void shouldReturnReceiptWithExistedProductsIdAndSaleCard(List<Product> testProducts, ru.clevertec.clevertecTaskRest.dao.entity.SaleCard saleCard){
             AtomicLong id = new AtomicLong(-1);
             testProducts.forEach(
                     product -> {
@@ -190,23 +189,23 @@ class IShopServiceImplTest {
 
         @ParameterizedTest
         @MethodSource("ru.clevertec.clevertecTaskRest.service.IShopServiceImplTest#provideSaleCards")
-        void ShouldGetPageOfSaleCards(List<SaleCard> testSaleCards){
+        void ShouldGetPageOfSaleCards(List<ru.clevertec.clevertecTaskRest.dao.entity.SaleCard> testSaleCards){
             testSaleCards.forEach(saleCard -> doReturn(ReadSaleCardDto.Builder.create()
                                                                                 .setId(saleCard.getId())
-                                                                                .setNumber(saleCard.getYear())
+                                                                                .setYear(saleCard.getYear())
                                                                                 .setSalePercentage(saleCard.getSalePercentage())
                                                                                 .build())
                     .when(conversionService)
                     .convert(saleCard, ReadSaleCardDto.class));
 
             PageRequest pageable = PageRequest.of(1, 5);
-            PageImpl<SaleCard> springPage = new PageImpl<>(testSaleCards, pageable, testSaleCards.size());
+            PageImpl<ru.clevertec.clevertecTaskRest.dao.entity.SaleCard> springPage = new PageImpl<>(testSaleCards, pageable, testSaleCards.size());
 
             MyPage<ReadSaleCardDto> actualPage = MyPage.Builder.<ReadSaleCardDto>create()
                     .setContent(springPage.getContent().stream()
                             .map(saleCard -> ReadSaleCardDto.Builder.create()
                                     .setId(saleCard.getId())
-                                    .setNumber(saleCard.getYear())
+                                    .setYear(saleCard.getYear())
                                     .setSalePercentage(saleCard.getSalePercentage())
                                     .build())
                             .toList())
@@ -302,15 +301,15 @@ class IShopServiceImplTest {
                         .build()
         );
         return Stream.of(
-                Arguments.of(productList, SaleCard.Builder.create()
+                Arguments.of(productList, ru.clevertec.clevertecTaskRest.dao.entity.SaleCard.Builder.create()
                         .setYear(2021L)
                         .setSalePercentage(10)
                         .build()),
-                Arguments.of(productList, SaleCard.Builder.create()
+                Arguments.of(productList, ru.clevertec.clevertecTaskRest.dao.entity.SaleCard.Builder.create()
                         .setYear(2022L)
                         .setSalePercentage(20)
                         .build()),
-                Arguments.of(productList, SaleCard.Builder.create()
+                Arguments.of(productList, ru.clevertec.clevertecTaskRest.dao.entity.SaleCard.Builder.create()
                         .setYear(2023L)
                         .setSalePercentage(30)
                         .build()));
@@ -319,15 +318,15 @@ class IShopServiceImplTest {
     static Stream<Arguments> provideSaleCards(){
         return Stream.of(
                 Arguments.of(Arrays.asList(
-                        SaleCard.Builder.create()
+                        ru.clevertec.clevertecTaskRest.dao.entity.SaleCard.Builder.create()
                                 .setYear(2021L)
                                 .setSalePercentage(10)
                                 .build(),
-                        SaleCard.Builder.create()
+                        ru.clevertec.clevertecTaskRest.dao.entity.SaleCard.Builder.create()
                                 .setYear(2022L)
                                 .setSalePercentage(20)
                                 .build(),
-                        SaleCard.Builder.create()
+                        ru.clevertec.clevertecTaskRest.dao.entity.SaleCard.Builder.create()
                                 .setYear(2023L)
                                 .setSalePercentage(30)
                                 .build())));

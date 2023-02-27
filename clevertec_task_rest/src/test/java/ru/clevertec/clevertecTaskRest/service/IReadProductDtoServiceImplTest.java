@@ -33,7 +33,7 @@ import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ISaleCardServiceImplTest {
+class IReadProductDtoServiceImplTest {
     @Mock
     private ISaleCardRepository saleCardRepository;
     @Spy
@@ -43,7 +43,7 @@ class ISaleCardServiceImplTest {
     private ISaleCardServiceImpl service;
 
     @Nested
-    class SaveSaleCardTest{
+    class SaveReadProductDtoTest {
         @ParameterizedTest
         @NullSource
         void saveFailedIfSaleCardIsNull(SaleCard saleCard){
@@ -58,7 +58,7 @@ class ISaleCardServiceImplTest {
     }
 
     @Nested
-    class GetSaleCardTest {
+    class GetReadProductDtoTest {
         @Test
         void shouldFailGetIfIdNonPresented(){
             when(saleCardRepository.findById(1L)).thenReturn(Optional.of(new SaleCard()));
@@ -124,7 +124,7 @@ class ISaleCardServiceImplTest {
     }
 
     @Nested
-    class UpdateSaleCardTest {
+    class UpdateReadProductDtoTest {
         @Test
         public void whenGivenIdShouldUpdateSaleCardIfFound() {
             SaleCard actualSaleCard = SaleCard.Builder.create()

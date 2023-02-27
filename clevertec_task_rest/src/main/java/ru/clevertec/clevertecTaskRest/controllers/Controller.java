@@ -27,9 +27,9 @@ public class Controller implements IShopController {
     }
 
     @Override
-    public ResponseEntity<String> getReceipt(List<Long> itemId, Long saleCardId) {
+    public ResponseEntity<String> getReceipt(List<Long> itemIds, Long saleCardId) {
         strBuff.setLength(0);
-        Receipt receipt = saleCardId == null ? shopService.getReceipt(itemId) : shopService.getReceipt(itemId, saleCardId);
+        Receipt receipt = saleCardId == null ? shopService.getReceipt(itemIds) : shopService.getReceipt(itemIds, saleCardId);
 
         int i = 0;
         for (ReadProductDto product : receipt.getProducts()) {
