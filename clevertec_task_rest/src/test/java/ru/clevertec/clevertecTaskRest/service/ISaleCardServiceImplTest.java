@@ -33,7 +33,7 @@ import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class IReadProductDtoServiceImplTest {
+class ISaleCardServiceImplTest {
     @Mock
     private ISaleCardRepository saleCardRepository;
     @Spy

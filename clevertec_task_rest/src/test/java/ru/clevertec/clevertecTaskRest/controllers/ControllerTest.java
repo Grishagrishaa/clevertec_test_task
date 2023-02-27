@@ -54,11 +54,32 @@ public class ControllerTest {
         this.buffer= new StringBuffer();
     }
 
+    @Test
+    void shouldReturnExceptionIfProductIsNotProvided() throws Exception {
+
+
+        List<Long> ids = List.of(1000L, 1001L, 1002L);
+        when(shopService.getReceipt(ids));
+
+        for (long id : ids) {
+            buffer.append("itemId=").append(id).append("&");
+        }
+
+
+        String pathVariables = buffer.toString();
+        mockMvc.perform(put("/api/v1/shop/products?" + pathVariables.substring(0, pathVariables.length() - 1)))
+                .andExpect(status().isAccepted())
+                .andDo(print());
+
+        verify(shopService).getReceipt(ids);
+    }
+
     @Nested
     class GetAllTests {
         @ParameterizedTest
         @MethodSource("ru.clevertec.clevertecTaskRest.controllers.ControllerTest#provideProductsAndPageable")
         void shouldReturnMyPageOfProducts(Pageable pageable, List<ReadProductDto> productList) throws Exception {
+
             PageImpl<ReadProductDto> springPage = new PageImpl<>(productList, pageable, productList.size());//for easy MyPage initialization
 
             MyPage<ReadProductDto> actualPage = MyPage.Builder.<ReadProductDto>create()
@@ -113,6 +134,9 @@ public class ControllerTest {
     @MethodSource("ru.clevertec.clevertecTaskRest.controllers.ControllerTest#provideProductsAndPageable")
     void shouldReturnReceiptIfIdsProvided(Pageable pageable, List<ReadProductDto> productList) throws Exception {
         buffer.setLength(0);
+        List<Long> ids = productList.stream()
+                .map(ReadProductDto::getId)
+                .toList();
 
         Receipt actualReceipt = Receipt.Builder.create()
                 .setProducts(productList)
@@ -121,9 +145,7 @@ public class ControllerTest {
                         .sum())
                 .build();
 
-        when(shopService.getReceipt(productList.stream()
-                                    .map(ReadProductDto::getId)
-                                    .toList()))
+        when(shopService.getReceipt(ids))
                 .thenReturn(actualReceipt);
 
         for (ReadProductDto product : productList) {
@@ -135,6 +157,9 @@ public class ControllerTest {
         mockMvc.perform(put("/api/v1/shop/products?" + pathVariables.substring(0, pathVariables.length() - 1)))
                 .andExpect(status().isAccepted())
                 .andDo(print());
+
+        verify(shopService).getReceipt(ids);
+
     }
 
     static Stream<Arguments> provideProductsAndPageable() {

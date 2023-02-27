@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 @DataJpaTest
-public class IReadProductDtoRepositoryTest {
+public class ISaleCardRepositoryTest {
 
   public static final int COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE = 9;
 
