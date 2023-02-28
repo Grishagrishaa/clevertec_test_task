@@ -1,16 +1,17 @@
 package ru.clevertec.clevertecTaskRest.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,6 @@ import ru.clevertec.clevertecTaskRest.service.dto.Receipt;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.mockito.Mockito.verify;
@@ -54,32 +54,11 @@ public class ControllerTest {
         this.buffer= new StringBuffer();
     }
 
-    @Test
-    void shouldReturnExceptionIfProductIsNotProvided() throws Exception {
-
-
-        List<Long> ids = List.of(1000L, 1001L, 1002L);
-        when(shopService.getReceipt(ids));
-
-        for (long id : ids) {
-            buffer.append("itemId=").append(id).append("&");
-        }
-
-
-        String pathVariables = buffer.toString();
-        mockMvc.perform(put("/api/v1/shop/products?" + pathVariables.substring(0, pathVariables.length() - 1)))
-                .andExpect(status().isAccepted())
-                .andDo(print());
-
-        verify(shopService).getReceipt(ids);
-    }
-
     @Nested
     class GetAllTests {
         @ParameterizedTest
         @MethodSource("ru.clevertec.clevertecTaskRest.controllers.ControllerTest#provideProductsAndPageable")
         void shouldReturnMyPageOfProducts(Pageable pageable, List<ReadProductDto> productList) throws Exception {
-
             PageImpl<ReadProductDto> springPage = new PageImpl<>(productList, pageable, productList.size());//for easy MyPage initialization
 
             MyPage<ReadProductDto> actualPage = MyPage.Builder.<ReadProductDto>create()
@@ -94,6 +73,33 @@ public class ControllerTest {
                     .build();
 
             when(shopService.getAllProducts(pageable)).thenReturn(actualPage);
+            mockMvc.perform(get(String.format("/api/v1/shop/products?page=%d&size=%d", pageable.getPageNumber(), pageable.getPageSize())))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("totalElements").value(actualPage.getTotalElements()))
+                    .andDo(print());
+
+            verify(shopService).getAllProducts(pageable);
+
+        }
+
+        @Test
+        void shouldReturnEmptyPageOfProductsIfNoProductsInDb() throws Exception {
+            Page<ReadProductDto> springPage = Page.empty();//for easy MyPage initialization
+
+            MyPage<ReadProductDto> actualPage = MyPage.Builder.<ReadProductDto>create()
+                    .setContent(springPage.getContent())
+                    .setFirst(springPage.isFirst())
+                    .setLast(springPage.isLast())
+                    .setNumber(springPage.getNumber())
+                    .setNumberOfElements(springPage.getNumberOfElements())
+                    .setTotalElements(springPage.getTotalElements())
+                    .setTotalPages(springPage.getTotalPages())
+                    .setSize(springPage.getSize())
+                    .build();
+
+            PageRequest pageable = PageRequest.of(1, 5);
+            when(shopService.getAllProducts(pageable)).thenReturn(actualPage);
+
             mockMvc.perform(get(String.format("/api/v1/shop/products?page=%d&size=%d", pageable.getPageNumber(), pageable.getPageSize())))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("totalElements").value(actualPage.getTotalElements()))
@@ -119,6 +125,32 @@ public class ControllerTest {
                     .setSize(springPage.getSize())
                     .build();
 
+            when(shopService.getAllSaleCards(pageable)).thenReturn(actualPage);
+            mockMvc.perform(get(String.format("/api/v1/shop/salecards?page=%d&size=%d", pageable.getPageNumber(), pageable.getPageSize())))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("totalElements").value(actualPage.getTotalElements()))
+                    .andDo(print());
+
+            verify(shopService).getAllSaleCards(pageable);
+
+        }
+
+        @Test
+        void shouldNotReturnEmptyPageOfOfSaleCardsIfNoSaleCardsInDb() throws Exception {
+            Page<ReadSaleCardDto> springPage = Page.empty();//for easy MyPage initialization
+
+            MyPage<ReadSaleCardDto> actualPage = MyPage.Builder.<ReadSaleCardDto>create()
+                    .setContent(springPage.getContent())
+                    .setFirst(springPage.isFirst())
+                    .setLast(springPage.isLast())
+                    .setNumber(springPage.getNumber())
+                    .setNumberOfElements(springPage.getNumberOfElements())
+                    .setTotalElements(springPage.getTotalElements())
+                    .setTotalPages(springPage.getTotalPages())
+                    .setSize(springPage.getSize())
+                    .build();
+
+            PageRequest pageable = PageRequest.of(1, 5);
             when(shopService.getAllSaleCards(pageable)).thenReturn(actualPage);
             mockMvc.perform(get(String.format("/api/v1/shop/salecards?page=%d&size=%d", pageable.getPageNumber(), pageable.getPageSize())))
                     .andExpect(status().isOk())
@@ -160,6 +192,23 @@ public class ControllerTest {
 
         verify(shopService).getReceipt(ids);
 
+    }
+
+    @Test
+    void shouldNotReturnReceiptIfProductIsNotProvided() throws Exception {
+        List<Long> ids = List.of(1000L, 1001L, 1002L);
+        when(shopService.getReceipt(ids)).thenThrow(ConstraintViolationException.class);
+
+        for (long id : ids) {
+            buffer.append("itemId=").append(id).append("&");
+        }
+
+        String pathVariables = buffer.toString();
+        mockMvc.perform(put("/api/v1/shop/products?" + pathVariables.substring(0, pathVariables.length() - 1)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+
+        verify(shopService).getReceipt(ids);
     }
 
     static Stream<Arguments> provideProductsAndPageable() {

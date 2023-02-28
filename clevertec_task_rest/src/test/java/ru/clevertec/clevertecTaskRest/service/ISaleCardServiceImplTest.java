@@ -19,6 +19,7 @@ import org.modelmapper.PropertyMap;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.clevertec.clevertecTaskRest.dao.api.ISaleCardRepository;
 import ru.clevertec.clevertecTaskRest.dao.entity.SaleCard;
 
@@ -43,7 +44,7 @@ class ISaleCardServiceImplTest {
     private ISaleCardServiceImpl service;
 
     @Nested
-    class SaveReadProductDtoTest {
+    class SaveSaleCardTest {
         @ParameterizedTest
         @NullSource
         void saveFailedIfSaleCardIsNull(SaleCard saleCard){
@@ -58,7 +59,7 @@ class ISaleCardServiceImplTest {
     }
 
     @Nested
-    class GetReadProductDtoTest {
+    class GetSaleCardTest {
         @Test
         void shouldFailGetIfIdNonPresented(){
             when(saleCardRepository.findById(1L)).thenReturn(Optional.of(new SaleCard()));
@@ -79,12 +80,12 @@ class ISaleCardServiceImplTest {
 
         @Test
         void shouldGetIfIdPresented(){
-            when(saleCardRepository.findById(1L)).thenReturn(Optional.of(new SaleCard()));
+            when(saleCardRepository.findById(1L)).thenReturn(Optional.of(new SaleCard()));//todo from list
             when(saleCardRepository.findById(2L)).thenReturn(Optional.of(new SaleCard()));
             when(saleCardRepository.findById(3L)).thenReturn(Optional.of(new SaleCard()));
 
             assertAll(
-                    () -> assertThat(service.getSaleCardById(1L)).isInstanceOf(SaleCard.class),
+                    () -> assertThat(service.getSaleCardById(1L)).isInstanceOf(SaleCard.class),//todo refactor
                     () -> assertThat(service.getSaleCardById(2L)).isInstanceOf(SaleCard.class),
                     () -> assertThat(service.getSaleCardById(3L)).isInstanceOf(SaleCard.class)
             );
@@ -101,17 +102,17 @@ class ISaleCardServiceImplTest {
             PageRequest pageable = PageRequest.of(page, size);
 
             List<SaleCard> productList = List.of(SaleCard.Builder.create()
-                                                            .setSalePercentage(10)
-                                                            .setYear(2021L)
-                                                            .build(),
-                                                 SaleCard.Builder.create()
-                                                            .setSalePercentage(20)
-                                                            .setYear(2022L)
-                                                            .build(),
-                                                 SaleCard.Builder.create()
-                                                            .setSalePercentage(30)
-                                                            .setYear(2023L)
-                                                            .build());
+                            .setSalePercentage(10)
+                            .setYear(2021L)
+                            .build(),
+                    SaleCard.Builder.create()
+                            .setSalePercentage(20)
+                            .setYear(2022L)
+                            .build(),
+                    SaleCard.Builder.create()
+                            .setSalePercentage(30)
+                            .setYear(2023L)
+                            .build());
 
             Page<SaleCard> actualPage = new PageImpl<>(productList, pageable, productList.size());
 
@@ -124,9 +125,9 @@ class ISaleCardServiceImplTest {
     }
 
     @Nested
-    class UpdateReadProductDtoTest {
+    class UpdateSaleCardTest {
         @Test
-        public void whenGivenIdShouldUpdateSaleCardIfFound() {
+        public void whenGivenIdShouldUpdateSaleCardIfFound() {//
             SaleCard actualSaleCard = SaleCard.Builder.create()
                     .setSalePercentage(10)
                     .setYear(2021L)
@@ -188,7 +189,7 @@ class ISaleCardServiceImplTest {
     }
 
     @Nested
-    class DeleteProductTest{
+    class DeleteSaleCardTest {
         @ParameterizedTest
         @ValueSource(longs = {1, 2, 3})
         void shouldDeleteWithGivenId(Long id){

@@ -18,12 +18,15 @@ import org.modelmapper.PropertyMap;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.clevertec.clevertecTaskRest.dao.api.IProductRepository;
 import ru.clevertec.clevertecTaskRest.dao.entity.Product;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
@@ -33,6 +36,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class IProductServiceImplTest {
+    private static final Predicate<Product> isNegativeCount = testProduct -> testProduct.getCount() < 0;
+
     @Mock
     private IProductRepository productRepository;
     @Spy
@@ -57,9 +62,9 @@ public class IProductServiceImplTest {
         }
 
         @ParameterizedTest
-        @MethodSource("ru.clevertec.clevertecTaskRest.service.IProductServiceImplTest#getProductsWithNegativeCount")
+        @MethodSource("ru.clevertec.clevertecTaskRest.service.IProductServiceImplTest#provideProductsWithNegativeCount")
         void saveFailedIfCountIsNotPositive(Product product){
-            if(product.getCount() < 0){
+            if(isNegativeCount.test(product)){
                 doThrow(ConstraintViolationException.class).when(productRepository).saveAndFlush(product);
             }else {
                 doReturn(product).when(productRepository).saveAndFlush(product);
@@ -70,9 +75,9 @@ public class IProductServiceImplTest {
         }
 
         @ParameterizedTest
-        @MethodSource("ru.clevertec.clevertecTaskRest.service.IProductServiceImplTest#getProductsWithPositiveCount")
+        @MethodSource("ru.clevertec.clevertecTaskRest.service.IProductServiceImplTest#provideProductsWithPositiveCount")
         void shouldSaveWithPositiveCount(Product product){
-            if(product.getCount() < 0){
+            if(isNegativeCount.test(product)){
                 doThrow(ConstraintViolationException.class).when(productRepository).saveAndFlush(product);
             }else {
                 doReturn(product).when(productRepository).saveAndFlush(product);
@@ -116,39 +121,9 @@ public class IProductServiceImplTest {
         }
 
         @DisplayName("Page of products: :")
-        @ParameterizedTest(name = "{index} => {0}, {1}")
-        @CsvSource(delimiter = '|', textBlock = """
-                    testCase1   |   1  |   5  |
-                    testCase2   |   2  |   2  |
-                    testCase3   |   3  |   1  |
-                """)
-        void shouldReturnProductsPage(String description, Integer page, Integer size){
-            PageRequest pageable = PageRequest.of(page, size);
-
-            List<Product> productList = List.of(Product.Builder.create()
-                                                        .setName("TestProduct1")
-                                                        .setManufacturer("Toyota")
-                                                        .setCost(53.9)
-                                                        .setWeight(355)
-                                                        .setExpirationDate(LocalDateTime.MIN)
-                                                        .setCount(4L)
-                                                        .build(),
-                                                Product.Builder.create()
-                                                        .setName("TestProduct2")
-                                                        .setManufacturer("Porsche")
-                                                        .setCost(21.0)
-                                                        .setWeight(123)
-                                                        .setExpirationDate(LocalDateTime.MIN)
-                                                        .setCount(3L)
-                                                        .build(),
-                                                Product.Builder.create()
-                                                        .setName("TestProduct3")
-                                                        .setManufacturer("BMW")
-                                                        .setCost(28.0)
-                                                        .setWeight(123)
-                                                        .setExpirationDate(LocalDateTime.MIN)
-                                                        .setCount(21L)
-                                                        .build());
+        @ParameterizedTest()
+        @MethodSource("ru.clevertec.clevertecTaskRest.service.IProductServiceImplTest#provideProductsAndPageable")
+        void shouldReturnProductsPage(Pageable pageable, List<Product> productList){
 
             Page<Product> actualPage = new PageImpl<>(productList, pageable, productList.size());
 
@@ -162,25 +137,12 @@ public class IProductServiceImplTest {
 
     @Nested
     class UpdateProductTest{
-        @Test
-        public void whenGivenIdShouldUpdateIfFound() {
-            Product actualProduct = Product.Builder.create()
-                                .setName("TestProduct3")
-                                .setManufacturer("BMW")
-                                .setCost(28.0)
-                                .setWeight(123)
-                                .setExpirationDate(LocalDateTime.MIN)
-                                .setCount(21L)
-                                .build();
+        @ParameterizedTest
+        @MethodSource("ru.clevertec.clevertecTaskRest.service.IProductServiceImplTest#provideProductsAndPageable")
+        public void whenGivenIdShouldUpdateIfFound(Pageable pageable, List<Product> productList) {
+            Product actualProduct = productList.get(1);
             actualProduct.setId(1L);
-            Product newProduct = Product.Builder.create()
-                                .setName("TestProduct3")
-                                .setManufacturer("BMW")
-                                .setCost(30.0)
-                                .setWeight(123)
-                                .setExpirationDate(LocalDateTime.MIN)
-                                .setCount(21L)
-                                .build();
+            Product newProduct = productList.get(2);
             newProduct.setId(2L);
 
             mapper.getConfiguration()
@@ -210,25 +172,12 @@ public class IProductServiceImplTest {
             verify(productRepository).saveAndFlush(newProduct);
         }
 
-        @Test
-        public void shouldThrowExceptionWhenSaleCardDoesntExist() {
-            Product actualProduct = Product.Builder.create()
-                    .setName("TestProduct3")
-                    .setManufacturer("BMW")
-                    .setCost(28.0)
-                    .setWeight(123)
-                    .setExpirationDate(LocalDateTime.MIN)
-                    .setCount(21L)
-                    .build();
+        @ParameterizedTest
+        @MethodSource("ru.clevertec.clevertecTaskRest.service.IProductServiceImplTest#provideProductsAndPageable")
+        public void shouldThrowExceptionWhenSaleCardDoesntExist(Pageable pageable, List<Product> productList) {
+            Product actualProduct = productList.get(1);
             actualProduct.setId(1L);
-            Product newProduct = Product.Builder.create()
-                    .setName("TestProduct3")
-                    .setManufacturer("BMW")
-                    .setCost(30.0)
-                    .setWeight(123)
-                    .setExpirationDate(LocalDateTime.MIN)
-                    .setCount(21L)
-                    .build();
+            Product newProduct = productList.get(2);
             newProduct.setId(2L);
 
             doReturn(Optional.empty()).when(productRepository).findById(anyLong());
@@ -257,48 +206,31 @@ public class IProductServiceImplTest {
 
             assertThrows(IllegalArgumentException.class, () -> service.deleteById(id));
             verify(productRepository).deleteById(id);
+
         }
     }
 
 
-    static Stream<Arguments> getProductsWithNegativeCount(){
-        return Stream.of(
-                Arguments.of(Product.Builder.create()
-                        .setName("TestProduct1")
-                        .setManufacturer("Toyota")
-                        .setCost(53.9)
-                        .setWeight(355)
-                        .setExpirationDate(LocalDateTime.MIN)
-                        .setCount(-10L)
-                        .build()),
-                Arguments.of(Product.Builder.create()
-                        .setName("TestProduct2")
-                        .setManufacturer("Porsche")
-                        .setCost(21.0)
-                        .setWeight(123)
-                        .setExpirationDate(LocalDateTime.MIN)
-                        .setCount(-3L)
-                        .build()),
-                Arguments.of(Product.Builder.create()
-                        .setName("TestProduct3")
-                        .setManufacturer("BMW")
-                        .setCost(28.0)
-                        .setWeight(123)
-                        .setExpirationDate(LocalDateTime.MIN)
-                        .setCount(-1238L)
-                        .build()),
-                Arguments.of(Product.Builder.create()
-                        .setName("TestProduct4")
-                        .setManufacturer("AUDI")
-                        .setCost(2.0)
-                        .setWeight(11)
-                        .setExpirationDate(LocalDateTime.MIN)
-                        .setCount(-123L)
-                        .build())
-        );
+    static Stream<Arguments> provideProductsWithNegativeCount(){
+        return provideProductsWithPositiveCount()
+                .map(Arguments::get)
+                .map(array -> (Product) array[0])
+                .peek(product -> product.setCount(product.getCount() * -1))
+                .map(Arguments::of);
     }
 
-    static Stream<Arguments> getProductsWithPositiveCount(){
+    static Stream<Arguments> provideProductsAndPageable() {
+        List<Product> productList = provideProductsWithPositiveCount()
+                .map(Arguments::get)
+                .map(array -> (Product) array[0])
+                .toList();
+        return Stream.of(
+                Arguments.of(PageRequest.of(1,5), productList),
+                Arguments.of(PageRequest.of(2, 2), productList),
+                Arguments.of(PageRequest.of(3, 1), productList));
+    }
+
+    static Stream<Arguments> provideProductsWithPositiveCount(){
         return Stream.of(
                 Arguments.of(Product.Builder.create()
                         .setName("TestProduct1")
@@ -306,7 +238,7 @@ public class IProductServiceImplTest {
                         .setCost(53.9)
                         .setWeight(355)
                         .setExpirationDate(LocalDateTime.MIN)
-                        .setCount(4L)
+                        .setCount(10L)
                         .build()),
                 Arguments.of(Product.Builder.create()
                         .setName("TestProduct2")
@@ -322,7 +254,7 @@ public class IProductServiceImplTest {
                         .setCost(28.0)
                         .setWeight(123)
                         .setExpirationDate(LocalDateTime.MIN)
-                        .setCount(21L)
+                        .setCount(1238L)
                         .build()),
                 Arguments.of(Product.Builder.create()
                         .setName("TestProduct4")
@@ -330,7 +262,7 @@ public class IProductServiceImplTest {
                         .setCost(2.0)
                         .setWeight(11)
                         .setExpirationDate(LocalDateTime.MIN)
-                        .setCount(45L)
+                        .setCount(123L)
                         .build())
         );
     }

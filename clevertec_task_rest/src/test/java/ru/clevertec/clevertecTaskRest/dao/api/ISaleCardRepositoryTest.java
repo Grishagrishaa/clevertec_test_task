@@ -53,11 +53,7 @@ public class ISaleCardRepositoryTest {
   @ParameterizedTest
   @MethodSource("ru.clevertec.clevertecTaskRest.dao.api.ISaleCardRepositoryTest#provideSaleCards")
   public void shouldFindAll(List<SaleCard> saleCards) {
-    AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
-    saleCards.forEach(product -> {
-      product.setId(id.incrementAndGet());
-      entityManager.persist(product);
-    });
+    persistSaleCards(saleCards);
 
     List<SaleCard> allSaleCards = repository.findAll();
 
@@ -69,11 +65,7 @@ public class ISaleCardRepositoryTest {
   @ParameterizedTest
   @MethodSource("ru.clevertec.clevertecTaskRest.dao.api.ISaleCardRepositoryTest#provideSaleCards")
   public void shouldFindById(List<SaleCard> saleCards) {
-    AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
-    saleCards.forEach(product -> {
-      product.setId(id.incrementAndGet());
-      entityManager.persist(product);
-    });
+    persistSaleCards(saleCards);
 
     SaleCard expected = repository.findById(saleCards.get(0).getId()).get();
 
@@ -84,11 +76,7 @@ public class ISaleCardRepositoryTest {
   @ParameterizedTest
   @MethodSource("ru.clevertec.clevertecTaskRest.dao.api.ISaleCardRepositoryTest#provideSaleCards")
   public void shouldUpdateById(List<SaleCard> saleCards) {
-    AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
-    saleCards.forEach(product -> {
-      product.setId(id.incrementAndGet());
-      entityManager.persist(product);
-    });
+    persistSaleCards(saleCards);
 
     SaleCard updatedDataProduct = saleCards.get(1);
 
@@ -111,11 +99,7 @@ public class ISaleCardRepositoryTest {
   @ParameterizedTest
   @MethodSource("ru.clevertec.clevertecTaskRest.dao.api.ISaleCardRepositoryTest#provideSaleCards")
   public void shouldDeleteById(List<SaleCard> saleCards) {
-    AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
-    saleCards.forEach(product -> {
-      product.setId(id.incrementAndGet());
-      entityManager.persist(product);
-    });
+    persistSaleCards(saleCards);
 
     Long idToDelete = saleCards.get(1).getId();
 
@@ -127,15 +111,19 @@ public class ISaleCardRepositoryTest {
   @ParameterizedTest
   @MethodSource("ru.clevertec.clevertecTaskRest.dao.api.ISaleCardRepositoryTest#provideSaleCards")
   public void shouldDeleteAll(List<SaleCard> saleCards) {
+    persistSaleCards(saleCards);
+
+    repository.deleteAll();
+
+    assertThat(repository.findAll()).isEmpty();
+  }
+
+  private void persistSaleCards(List<SaleCard> saleCards) {
     AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
     saleCards.forEach(product -> {
       product.setId(id.incrementAndGet());
       entityManager.persist(product);
     });
-
-    repository.deleteAll();
-
-    assertThat(repository.findAll()).isEmpty();
   }
 
   static Stream<Arguments> provideSaleCards(){

@@ -60,11 +60,7 @@ public class IProductRepositoryTest {
   @ParameterizedTest
   @MethodSource("ru.clevertec.clevertecTaskRest.dao.api.IProductRepositoryTest#provideProductsWithPositiveCount")
   public void shouldFindAll(List<Product> products) {
-    AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
-    products.forEach(product -> {
-      product.setId(id.incrementAndGet());
-      entityManager.persist(product);
-    });
+    persistProducts(products);
 
     List<Product> all = repository.findAll();
 
@@ -74,11 +70,7 @@ public class IProductRepositoryTest {
   @ParameterizedTest
   @MethodSource("ru.clevertec.clevertecTaskRest.dao.api.IProductRepositoryTest#provideProductsWithPositiveCount")
   public void shouldFindById(List<Product> products) {
-    AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
-    products.forEach(product -> {
-      product.setId(id.incrementAndGet());
-      entityManager.persist(product);
-    });
+    persistProducts(products);
 
     Product expectedProduct = repository.findById(products.get(0).getId()).get();
 
@@ -89,11 +81,7 @@ public class IProductRepositoryTest {
   @ParameterizedTest
   @MethodSource("ru.clevertec.clevertecTaskRest.dao.api.IProductRepositoryTest#provideProductsWithPositiveCount")
   public void shouldUpdateById(List<Product> products) {
-    AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
-    products.forEach(product -> {//setId, Save
-      product.setId(id.incrementAndGet());
-      entityManager.persist(product);
-    });
+    persistProducts(products);
 
     Product updateDataproduct = products.get(1);//from method source
 
@@ -125,11 +113,7 @@ public class IProductRepositoryTest {
   @ParameterizedTest
   @MethodSource("ru.clevertec.clevertecTaskRest.dao.api.IProductRepositoryTest#provideProductsWithPositiveCount")
   public void shouldDeleteById(List<Product> products) {
-    AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
-    products.forEach(product -> {//setId, Save
-      product.setId(id.incrementAndGet());
-      entityManager.persist(product);
-    });
+    persistProducts(products);
 
     Long idToDelete = products.get(1).getId();//get 1 Entity from methodSource and get id from it
 
@@ -141,15 +125,19 @@ public class IProductRepositoryTest {
   @ParameterizedTest
   @MethodSource("ru.clevertec.clevertecTaskRest.dao.api.IProductRepositoryTest#provideProductsWithPositiveCount")
   public void shouldDeleteAll(List<Product> products) {
+    persistProducts(products);
+
+    repository.deleteAll();
+
+    assertThat(repository.findAll()).isEmpty();
+  }
+
+  private void persistProducts(List<Product> products) {
     AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
     products.forEach(product -> {//setId, Save
       product.setId(id.incrementAndGet());
       entityManager.persist(product);
     });
-
-    repository.deleteAll();
-
-    assertThat(repository.findAll()).isEmpty();
   }
 
   static Stream<Arguments> provideProductsWithPositiveCount(){
