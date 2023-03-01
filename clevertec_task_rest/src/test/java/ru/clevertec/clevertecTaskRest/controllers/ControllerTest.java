@@ -171,7 +171,7 @@ public class ControllerTest {
                 .toList();
 
         Receipt actualReceipt = Receipt.Builder.create()
-                .setProducts(productList)
+                .setProductDtos(productList)
                 .setTotalSum(productList.stream()
                         .mapToDouble(ReadProductDto::getCost)
                         .sum())
