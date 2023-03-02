@@ -20,7 +20,6 @@ import ru.clevertec.clevertecTaskRest.dao.entity.SaleCard;
 import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
 import ru.clevertec.clevertecTaskRest.service.dto.ReadSaleCardDto;
 import ru.clevertec.clevertecTaskRest.service.dto.Receipt;
-import ru.clevertec.clevertecTaskRest.util.ModelMapperUtils;
 import ru.clevertec.clevertecTaskRest.util.builder.MyPageBuilder;
 import ru.clevertec.clevertecTaskRest.util.builder.ProductBuilder;
 import ru.clevertec.clevertecTaskRest.util.builder.SaleCardBuilder;
@@ -57,7 +56,7 @@ class IShopServiceImplTest {
         @ParameterizedTest
         @MethodSource("ru.clevertec.clevertecTaskRest.service.IShopServiceImplTest#provideProductsList")
         void shouldReturnReceiptWithExistedProductsId(List<Product> testProducts){
-            mockUpdateMethod(testProducts);
+            mockUpdateMethods(testProducts);
 
             Receipt actualReceipt = Receipt.Builder.create()
                     .setProductDtos(testProducts.stream().map(ProductBuilder::convertToDto).toList())
@@ -71,7 +70,7 @@ class IShopServiceImplTest {
         @ParameterizedTest
         @MethodSource("ru.clevertec.clevertecTaskRest.service.IShopServiceImplTest#provideProductsListAndSaleCard")
         void shouldReturnReceiptWithExistedProductsIdAndSaleCard(List<Product> testProducts, SaleCard saleCard){
-            mockUpdateMethod(testProducts);
+            mockUpdateMethods(testProducts);
             doReturn(saleCard).when(saleCardService).getSaleCardById(saleCard.getId());
 
             Receipt actualReceipt = Receipt.Builder.create()
@@ -114,7 +113,7 @@ class IShopServiceImplTest {
         }
     }
 
-    private void mockUpdateMethod(List<Product> testProducts) {
+    private void mockUpdateMethods(List<Product> testProducts) {
         testProducts.forEach(
                 productStub -> {
                     doReturn(productStub)
