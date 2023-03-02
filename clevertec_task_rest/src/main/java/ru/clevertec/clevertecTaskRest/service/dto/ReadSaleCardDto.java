@@ -1,20 +1,22 @@
 package ru.clevertec.clevertecTaskRest.service.dto;
 
 
+import java.util.Objects;
+
 public class ReadSaleCardDto {
     private final Long id;
-    private final Long number;
+    private final Long year;
     private final Integer salePercentage;
 
-    public ReadSaleCardDto(Long id, Long number, Integer salePercentage) {
+    public ReadSaleCardDto(Long id, Long year, Integer salePercentage) {
         this.id = id;
-        this.number = number;
+        this.year = year;
         this.salePercentage = salePercentage;
     }
 
     public ReadSaleCardDto(Builder builder) {
         this.id = builder.id;
-        this.number = builder.number;
+        this.year = builder.year;
         this.salePercentage = builder.salePercentage;
     }
 
@@ -23,7 +25,7 @@ public class ReadSaleCardDto {
     }
 
     public Long getNumber() {
-        return number;
+        return year;
     }
 
     public Integer getSalePercentage() {
@@ -32,7 +34,7 @@ public class ReadSaleCardDto {
 
     public static class Builder{
         private  Long id;
-        private Long number;
+        private Long year;
         private Integer salePercentage;
 
         private Builder() {
@@ -43,8 +45,8 @@ public class ReadSaleCardDto {
             return this;
         }
 
-        public Builder setNumber(Long number) {
-            this.number = number;
+        public Builder setYear(Long number) {
+            this.year = number;
             return this;
         }
 
@@ -60,5 +62,27 @@ public class ReadSaleCardDto {
         public ReadSaleCardDto build(){
             return new ReadSaleCardDto(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ReadSaleCardDto that = (ReadSaleCardDto) o;
+        return Objects.equals(id, that.id) && Objects.equals(year, that.year) && Objects.equals(salePercentage, that.salePercentage);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, year, salePercentage);
+    }
+
+    @Override
+    public String toString() {
+        return "ReadSaleCardDto{" +
+                "id=" + id +
+                ", year=" + year +
+                ", salePercentage=" + salePercentage +
+                '}';
     }
 }

@@ -17,9 +17,17 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.postgresql:postgresql'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.modelmapper:modelmapper:3.1.1'
 	implementation 'org.liquibase:liquibase-core:4.18.0'
+
+	testImplementation'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.1'
+	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
+	testImplementation 'org.mockito:mockito-junit-jupiter:2.23.0'
+	implementation 'javassist:javassist:3.11.0.GA'
+	testImplementation 'net.bytebuddy:byte-buddy-agent:1.10.9'
+
+	testImplementation 'com.h2database:h2:1.4.200'
 }
 
 test {
