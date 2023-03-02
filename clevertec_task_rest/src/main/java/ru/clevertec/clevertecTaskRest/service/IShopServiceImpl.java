@@ -1,6 +1,6 @@
 package ru.clevertec.clevertecTaskRest.service;
 
-import ru.clevertec.clevertecTaskRest.controllers.pagination.MyPage;
+import ru.clevertec.clevertecTaskRest.controllers.pagination.PageDtos;
 import ru.clevertec.clevertecTaskRest.dao.entity.Product;
 import ru.clevertec.clevertecTaskRest.service.api.IProductService;
 import ru.clevertec.clevertecTaskRest.service.api.ISaleCardService;
@@ -45,7 +45,7 @@ public class IShopServiceImpl implements IShopService {
                 .sum();
 
         return Receipt.Builder.create()
-                .setProducts(products)
+                .setProductDtos(products)
                 .setTotalSum(sum)
                 .build();
     }
@@ -61,13 +61,13 @@ public class IShopServiceImpl implements IShopService {
                   .sum();
 
         return Receipt.Builder.create()
-                .setProducts(products)
-                .setTotalSum((sum * ((100.0 - saleCard.getSalePercentage())/100)))
+                .setProductDtos(products)
+                .setTotalSum(sum, saleCard)
                 .build();
     }
 
     @Override
-    public MyPage<ReadProductDto> getAllProducts(Pageable pageable) {
+    public PageDtos<ReadProductDto> getAllProducts(Pageable pageable) {
         Page<Product> springPage = productService.getAll(pageable);
 
         List<ReadProductDto> readProductDtoList = springPage.getContent()
@@ -75,13 +75,13 @@ public class IShopServiceImpl implements IShopService {
                 .map(e -> conversionService.convert(e, ReadProductDto.class))
                 .toList();
 
-        MyPage<ReadProductDto> myPage = mapper.map(springPage, MyPage.class);
-        myPage.setContent(readProductDtoList);
-        return myPage;
+        PageDtos<ReadProductDto> pageDtos = mapper.map(springPage, PageDtos.class);
+        pageDtos.setContent(readProductDtoList);
+        return pageDtos;
     }
 
     @Override
-    public MyPage<ReadSaleCardDto> getAllSaleCards(Pageable pageable) {
+    public PageDtos<ReadSaleCardDto> getAllSaleCards(Pageable pageable) {
         Page<ru.clevertec.clevertecTaskRest.dao.entity.SaleCard> springPage = saleCardService.getAllSaleCards(pageable);
 
         List<ReadSaleCardDto> readSaleCardDtoList = springPage.getContent()
@@ -89,10 +89,10 @@ public class IShopServiceImpl implements IShopService {
                 .map(e -> conversionService.convert(e, ReadSaleCardDto.class))
                 .toList();
 
-        MyPage<ReadSaleCardDto> myPage = mapper.map(springPage, MyPage.class);
-        myPage.setContent(readSaleCardDtoList);
+        PageDtos<ReadSaleCardDto> pageDtos = mapper.map(springPage, PageDtos.class);
+        pageDtos.setContent(readSaleCardDtoList);
 
-        return myPage;
+        return pageDtos;
     }
 
     @Transactional//connot be private due annotation

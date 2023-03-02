@@ -1,6 +1,6 @@
 package ru.clevertec.clevertecTaskRest.controllers.api;
 
-import ru.clevertec.clevertecTaskRest.controllers.pagination.MyPage;
+import ru.clevertec.clevertecTaskRest.controllers.pagination.PageDtos;
 import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
 import ru.clevertec.clevertecTaskRest.service.dto.ReadSaleCardDto;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +18,10 @@ public interface IShopController {
                                       @RequestParam(required = false, name = "saleCardId")Long saleCardId);
 
     @GetMapping("/products")
-    ResponseEntity<MyPage<ReadProductDto>> getAllProducts(@RequestParam(required = false, defaultValue = "0", name = "page") Integer page,
-                                                          @RequestParam(required = false, defaultValue = "5", name = "size") Integer size);
-    @GetMapping("/salecards")
-    ResponseEntity<MyPage<ReadSaleCardDto>> getAllSaleCards(@RequestParam(required = false, defaultValue = "0", name = "page") Integer page,
+    ResponseEntity<PageDtos<ReadProductDto>> getAllProducts(@RequestParam(required = false, defaultValue = "0", name = "page") Integer page,
                                                             @RequestParam(required = false, defaultValue = "5", name = "size") Integer size);
+    @GetMapping("/salecards")
+    ResponseEntity<PageDtos<ReadSaleCardDto>> getAllSaleCards(@RequestParam(required = false, defaultValue = "0", name = "page") Integer page,
+                                                              @RequestParam(required = false, defaultValue = "5", name = "size") Integer size);
 
 }

@@ -20,8 +20,7 @@ import ru.clevertec.clevertecTaskRest.dao.entity.SaleCard;
 import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
 import ru.clevertec.clevertecTaskRest.service.dto.ReadSaleCardDto;
 import ru.clevertec.clevertecTaskRest.service.dto.Receipt;
-import ru.clevertec.clevertecTaskRest.util.ModelMapperUtils;
-import ru.clevertec.clevertecTaskRest.util.builder.MyPageBuilder;
+import ru.clevertec.clevertecTaskRest.util.builder.PageDtosBuilder;
 import ru.clevertec.clevertecTaskRest.util.builder.ProductBuilder;
 import ru.clevertec.clevertecTaskRest.util.builder.SaleCardBuilder;
 
@@ -96,7 +95,7 @@ class IShopServiceImplTest {
             doReturn(springPage).when(productService).getAll(pageable);
 
 
-            assertThat(MyPageBuilder.fromSpringPage(springPage, testProducts.stream().map(ProductBuilder::convertToDto).toList()))
+            assertThat(PageDtosBuilder.fromSpringPage(springPage, testProducts.stream().map(ProductBuilder::convertToDto).toList()))
                     .isEqualTo(shopService.getAllProducts(pageable));
         }
 
@@ -109,7 +108,7 @@ class IShopServiceImplTest {
             PageImpl<SaleCard> springPage = new PageImpl<>(testSaleCards, pageable, testSaleCards.size());
             doReturn(springPage).when(saleCardService).getAllSaleCards(pageable);
 
-            assertThat(MyPageBuilder.fromSpringPage(springPage, testSaleCards.stream().map(SaleCardBuilder::convertToDto).toList()))
+            assertThat(PageDtosBuilder.fromSpringPage(springPage, testSaleCards.stream().map(SaleCardBuilder::convertToDto).toList()))
                     .isEqualTo(shopService.getAllSaleCards(pageable));
         }
     }

@@ -1,6 +1,6 @@
 package ru.clevertec.clevertecTaskRest.service.api;
 
-import ru.clevertec.clevertecTaskRest.controllers.pagination.MyPage;
+import ru.clevertec.clevertecTaskRest.controllers.pagination.PageDtos;
 import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
 import ru.clevertec.clevertecTaskRest.service.dto.ReadSaleCardDto;
 import ru.clevertec.clevertecTaskRest.service.dto.Receipt;
@@ -13,8 +13,8 @@ public interface IShopService {
 
     Receipt getReceipt(List<Long> ids, Long saleCardNumber);
 
-    MyPage<ReadProductDto> getAllProducts(Pageable pageable);
+    PageDtos<ReadProductDto> getAllProducts(Pageable pageable);
 
-    MyPage<ReadSaleCardDto> getAllSaleCards(Pageable pageable);
+    PageDtos<ReadSaleCardDto> getAllSaleCards(Pageable pageable);
 
 }
