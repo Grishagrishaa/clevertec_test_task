@@ -11,7 +11,7 @@ public class SaleCardToSaleCardReadDto implements Converter<SaleCard, ReadSaleCa
     public ReadSaleCardDto convert(SaleCard s) {
         return ReadSaleCardDto.Builder.create()
                 .setId(s.getId())
-                .setNumber(s.getYear())
+                .setYear(s.getYear())
                 .setSalePercentage(s.getSalePercentage())
                 .build();
     }

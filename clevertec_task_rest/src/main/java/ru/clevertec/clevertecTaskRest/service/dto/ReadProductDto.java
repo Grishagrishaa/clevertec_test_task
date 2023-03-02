@@ -1,6 +1,7 @@
 package ru.clevertec.clevertecTaskRest.service.dto;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class ReadProductDto {
     private final Long id;
@@ -112,6 +113,32 @@ public class ReadProductDto {
         public ReadProductDto build(){
             return new ReadProductDto(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ReadProductDto that = (ReadProductDto) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(manufacturer, that.manufacturer) && Objects.equals(expirationDate, that.expirationDate) && Objects.equals(weight, that.weight) && Objects.equals(cost, that.cost) && Objects.equals(count, that.count);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, manufacturer, expirationDate, weight, cost, count);
+    }
+
+    @Override
+    public String toString() {
+        return "ReadProductDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", expirationDate=" + expirationDate +
+                ", weight=" + weight +
+                ", cost=" + cost +
+                ", count=" + count +
+                '}';
     }
 }
 

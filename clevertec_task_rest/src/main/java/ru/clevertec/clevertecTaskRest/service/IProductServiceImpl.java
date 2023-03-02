@@ -1,5 +1,6 @@
 package ru.clevertec.clevertecTaskRest.service;
 
+import org.springframework.validation.annotation.Validated;
 import ru.clevertec.clevertecTaskRest.dao.api.IProductRepository;
 import ru.clevertec.clevertecTaskRest.dao.entity.Product;
 import ru.clevertec.clevertecTaskRest.service.api.IProductService;
@@ -14,15 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Validated
 @Transactional(readOnly = true)
 public class IProductServiceImpl implements IProductService {
     private final IProductRepository productRepository;
-    private final ConversionService conversionService;
     private final ModelMapper mapper;
 
-    public IProductServiceImpl(IProductRepository productRepository, ConversionService conversionService, ModelMapper mapper) {
+    public IProductServiceImpl(IProductRepository productRepository, ModelMapper mapper) {
         this.productRepository = productRepository;
-        this.conversionService = conversionService;
         this.mapper = mapper;
     }
 
@@ -42,14 +42,8 @@ public class IProductServiceImpl implements IProductService {
     @Override
 //    @Cacheable(cacheNames="product")
     public Page<Product> getAll(Pageable pageable) {
+        if(pageable.getPageSize() == 0) return Page.empty();
         return productRepository.findAll(pageable);
-    }
-
-    @Override
-    @Transactional
-    @CacheEvict(cacheNames="product")
-    public void deleteById(Long id) {
-        productRepository.deleteById(id);
     }
 
     @Override
@@ -62,4 +56,13 @@ public class IProductServiceImpl implements IProductService {
 
         return save(productFromDb);
     }
+
+    @Override
+    @Transactional
+    @CacheEvict(cacheNames="product")
+    public void deleteById(Long id) {
+        productRepository.deleteById(id);
+    }
+
+
 }
