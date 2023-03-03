@@ -18,12 +18,7 @@ public class ProductBuilder {
     private Double cost;
     private Long count;
 
-    public ProductBuilder(Long id,
-                          LocalDateTime createdDate, LocalDateTime updatedDate,
-                          String name, String manufacturer,
-                          LocalDateTime expirationDate,
-                          Integer weight, Double cost,
-                          Long count) {
+    public ProductBuilder() {
         this.id = 1L;
         this.createdDate = LocalDateTime.MIN;
         this.updatedDate = LocalDateTime.MIN;
@@ -33,9 +28,6 @@ public class ProductBuilder {
         this.weight = 1000;
         this.cost = 10.00;
         this.count = 10_000L;
-    }
-
-    private ProductBuilder() {
     }
 
     public static ProductBuilder clone(Product productToClone){
@@ -130,8 +122,6 @@ public class ProductBuilder {
     public Product build(){
         return Product.Builder.create()
                 .setId(id)
-                .setUpdatedDate(updatedDate)
-                .setCreatedDate(createdDate)
                 .setName(name)
                 .setManufacturer(manufacturer)
                 .setCost(cost)

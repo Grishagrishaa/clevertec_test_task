@@ -1,15 +1,28 @@
 package ru.clevertec.clevertecTaskRest.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import ru.clevertec.clevertecTaskRest.json.annotations.JsonElement;
+import ru.clevertec.clevertecTaskRest.json.annotations.JsonSerializable;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@JsonSerializable
 public class ReadProductDto {
+    @JsonElement
     private final Long id;
+    @JsonElement
     private final String name;
+    @JsonElement
     private final String manufacturer;
+    @JsonElement
+    @JsonIgnore
     private final LocalDateTime expirationDate;
+    @JsonElement
     private final Integer weight;
+    @JsonElement
     private final Double cost;
+    @JsonElement
     private final Long count;
 
     public ReadProductDto(Long id, String name, String manufacturer, LocalDateTime expirationDate, Integer weight, Double cost, Long count) {
@@ -113,6 +126,7 @@ public class ReadProductDto {
         public ReadProductDto build(){
             return new ReadProductDto(this);
         }
+
     }
 
     @Override

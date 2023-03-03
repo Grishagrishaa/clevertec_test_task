@@ -16,7 +16,7 @@ public class JsonProductDtoPageDtosReader implements IReader<MyPage<ReadProductD
 
         return MyPage.Builder.<ReadProductDto>create()
                 .setContent(valuesMap.get("content") != null ?
-                                        Arrays.stream(valuesMap.get("content").replaceAll("[^a-zA-Z0-9,}:]", "").split("},"))
+                                        Arrays.stream(valuesMap.get("content").replaceAll("[^a-zA-Z0-9,.}:]", "").split("},"))
                                               .map(readProductDtoReader::deserialize).toList() :
                             null)
                 .setFirst(valuesMap.get("content") != null ? Boolean.parseBoolean(valuesMap.get("first")) : null)
@@ -32,5 +32,6 @@ public class JsonProductDtoPageDtosReader implements IReader<MyPage<ReadProductD
     @Override
     public boolean isReadable(Class<?> clazz) {
         return clazz.getSimpleName().equalsIgnoreCase(MyPage.class.getSimpleName());
+
     }
 }

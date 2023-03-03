@@ -45,7 +45,7 @@ public class IShopServiceImpl implements IShopService {
                 .sum();
 
         return Receipt.Builder.create()
-                .setProducts(products)
+                .setProductDtos(products)
                 .setTotalSum(sum)
                 .build();
     }
@@ -61,8 +61,8 @@ public class IShopServiceImpl implements IShopService {
                   .sum();
 
         return Receipt.Builder.create()
-                .setProducts(products)
-                .setTotalSum((sum * ((100.0 - saleCard.getSalePercentage())/100)))
+                .setProductDtos(products)
+                .setTotalSum(sum, saleCard)
                 .build();
     }
 

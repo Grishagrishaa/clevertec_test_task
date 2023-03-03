@@ -14,10 +14,7 @@ public class SaleCardBuilder {
     private Long year;
     private Integer salePercentage;
 
-    public SaleCardBuilder(Long id,
-                           LocalDateTime createdDate, LocalDateTime updatedDate,
-                           Long year,
-                           Integer salePercentage) {
+    public SaleCardBuilder() {
         this.id = 1L;
         this.createdDate = LocalDateTime.MIN;
         this.updatedDate = LocalDateTime.MIN;
@@ -25,8 +22,6 @@ public class SaleCardBuilder {
         this.salePercentage = 30;
     }
 
-    public SaleCardBuilder() {
-    }
 
     public static SaleCardBuilder clone(SaleCard saleCardToClone){
         SaleCardBuilder saleCardBuilder = new SaleCardBuilder();

@@ -15,8 +15,8 @@ public class JsonReceiptReader implements IReader<Receipt> {
 
         return Receipt.Builder.create()
                 .setTotalSum(valuesMap.get("totalSum") != null ? Double.parseDouble(valuesMap.get("totalSum")) : null)
-                .setProducts(valuesMap.get("products") != null ?
-                        Arrays.stream(valuesMap.get("products").replaceAll("[^a-zA-Z0-9,}:]", "").split("},"))
+                .setProductDtos(valuesMap.get("products") != null ?
+                        Arrays.stream(valuesMap.get("products").replaceAll("[^a-zA-Z0-9,.}:]", "").split("},"))
                                 .map(readProductDtoReader::deserialize).toList() :
                         null)
                 .build();
