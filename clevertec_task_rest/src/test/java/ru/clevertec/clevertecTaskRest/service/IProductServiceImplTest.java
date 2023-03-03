@@ -7,27 +7,31 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.*;
-import org.mockito.BDDMockito;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.clevertec.clevertecTaskRest.dao.api.IProductRepository;
 import ru.clevertec.clevertecTaskRest.dao.entity.Product;
+import ru.clevertec.clevertecTaskRest.util.ModelMapperUtils;
+import ru.clevertec.clevertecTaskRest.util.builder.ProductBuilder;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 
@@ -41,42 +45,26 @@ public class IProductServiceImplTest {
     @InjectMocks
     private IProductServiceImpl service;
 
+    public IProductServiceImplTest() {
+        mapper = ModelMapperUtils.productMapper();
+    }
+
     @Nested
     class SaveProductTest {
 
         @ParameterizedTest
-        @NullSource
-        void saveFailedIfProductIsNull(Product product){
-            doThrow(NullPointerException.class).when(productRepository).saveAndFlush(isNull());
-
-
-            assertThatNullPointerException()
-                    .isThrownBy(() -> service.save(product));
-
-
-        }
-
-        @ParameterizedTest
-        @MethodSource("ru.clevertec.clevertecTaskRest.service.IProductServiceImplTest#getProductsWithNegativeCount")
-        void saveFailedIfCountIsNotPositive(Product product){
-            if(product.getCount() < 0){
-                doThrow(ConstraintViolationException.class).when(productRepository).saveAndFlush(product);
-            }else {
-                doReturn(product).when(productRepository).saveAndFlush(product);
-            }
+        @MethodSource("ru.clevertec.clevertecTaskRest.service.IProductServiceImplTest#provideProductWithNegativeCount")
+        void shouldFailSaveIfProductHasNegativeCount(Product product){
+            doThrow(ConstraintViolationException.class).when(productRepository).saveAndFlush(product);
 
             assertThatExceptionOfType(ConstraintViolationException.class)
                     .isThrownBy(() -> service.save(product));
         }
 
         @ParameterizedTest
-        @MethodSource("ru.clevertec.clevertecTaskRest.service.IProductServiceImplTest#getProductsWithPositiveCount")
-        void shouldSaveWithPositiveCount(Product product){
-            if(product.getCount() < 0){
-                doThrow(ConstraintViolationException.class).when(productRepository).saveAndFlush(product);
-            }else {
-                doReturn(product).when(productRepository).saveAndFlush(product);
-            }
+        @MethodSource("ru.clevertec.clevertecTaskRest.service.IProductServiceImplTest#provideTwoProducts")
+        void shouldSaveIfProductHasPositiveCount(Product product){
+            doReturn(product).when(productRepository).saveAndFlush(product);
 
             assertThat(product).isEqualTo(service.save(product));
         }
@@ -85,75 +73,28 @@ public class IProductServiceImplTest {
     @Nested
     class GetProductTest {
         @Test
-        void shouldFailGetIfIdNonPresented(){
-            when(productRepository.findById(1L)).thenReturn(Optional.of(new Product()));
-            when(productRepository.findById(2L)).thenReturn(Optional.of(new Product()));
-            when(productRepository.findById(3L)).thenReturn(Optional.of(new Product()));
+        void shouldGetProductIfIdPresented(){
+            Product actualProduct = ProductBuilder.randomValues().build();
+            doReturn(Optional.of(actualProduct)).when(productRepository).findById(1L);
 
-            doThrow(EntityNotFoundException.class).when(productRepository).findById(4L);
-            doThrow(EntityNotFoundException.class).when(productRepository).findById(5L);
-
-            assertAll(
-                    () -> assertDoesNotThrow(() -> service.getById(1L)),
-                    () -> assertDoesNotThrow(() -> service.getById(2L)),
-                    () -> assertDoesNotThrow(() -> service.getById(3L)),
-                    () -> assertThrows(EntityNotFoundException.class, () -> service.getById(4L)),
-                    () -> assertThrows(EntityNotFoundException.class, () -> service.getById(5L))
-            );
+            assertThat(service.getById(1L)).isEqualTo(actualProduct);
         }
 
         @Test
-        void shouldGetIfIdPresented(){
-            when(productRepository.findById(1L)).thenReturn(Optional.of(new Product()));
-            when(productRepository.findById(2L)).thenReturn(Optional.of(new Product()));
-            when(productRepository.findById(3L)).thenReturn(Optional.of(new Product()));
+        void shouldFailGetProductIfIdNonPresented(){
+            doThrow(EntityNotFoundException.class).when(productRepository).findById(2L);
 
-            assertAll(
-                    () -> assertThat(service.getById(1L)).isInstanceOf(Product.class),
-                    () -> assertThat(service.getById(2L)).isInstanceOf(Product.class),
-                    () -> assertThat(service.getById(3L)).isInstanceOf(Product.class)
-            );
+            assertThrows(EntityNotFoundException.class, () -> service.getById(2L));
+
         }
 
         @DisplayName("Page of products: :")
-        @ParameterizedTest(name = "{index} => {0}, {1}")
-        @CsvSource(delimiter = '|', textBlock = """
-                    testCase1   |   1  |   5  |
-                    testCase2   |   2  |   2  |
-                    testCase3   |   3  |   1  |
-                """)
-        void shouldReturnProductsPage(String description, Integer page, Integer size){
-            PageRequest pageable = PageRequest.of(page, size);
-
-            List<Product> productList = List.of(Product.Builder.create()
-                                                        .setName("TestProduct1")
-                                                        .setManufacturer("Toyota")
-                                                        .setCost(53.9)
-                                                        .setWeight(355)
-                                                        .setExpirationDate(LocalDateTime.MIN)
-                                                        .setCount(4L)
-                                                        .build(),
-                                                Product.Builder.create()
-                                                        .setName("TestProduct2")
-                                                        .setManufacturer("Porsche")
-                                                        .setCost(21.0)
-                                                        .setWeight(123)
-                                                        .setExpirationDate(LocalDateTime.MIN)
-                                                        .setCount(3L)
-                                                        .build(),
-                                                Product.Builder.create()
-                                                        .setName("TestProduct3")
-                                                        .setManufacturer("BMW")
-                                                        .setCost(28.0)
-                                                        .setWeight(123)
-                                                        .setExpirationDate(LocalDateTime.MIN)
-                                                        .setCount(21L)
-                                                        .build());
-
+        @ParameterizedTest
+        @MethodSource("ru.clevertec.clevertecTaskRest.service.IProductServiceImplTest#provideProductsAndPageable")
+        void shouldReturnProductsPage(Pageable pageable, List<Product> productList){
             Page<Product> actualPage = new PageImpl<>(productList, pageable, productList.size());
 
-            BDDMockito.given(productRepository.findAll(pageable))
-                    .willReturn(new PageImpl<>(productList, pageable, productList.size()));
+            doReturn(new PageImpl<>(productList, pageable, productList.size())).when(productRepository).findAll(pageable);
 
             assertEquals(service.getAll(pageable), actualPage);
             verify(productRepository).findAll(pageable);
@@ -162,78 +103,28 @@ public class IProductServiceImplTest {
 
     @Nested
     class UpdateProductTest{
-        @Test
-        public void whenGivenIdShouldUpdateIfFound() {
-            Product actualProduct = Product.Builder.create()
-                                .setName("TestProduct3")
-                                .setManufacturer("BMW")
-                                .setCost(28.0)
-                                .setWeight(123)
-                                .setExpirationDate(LocalDateTime.MIN)
-                                .setCount(21L)
-                                .build();
-            actualProduct.setId(1L);
-            Product newProduct = Product.Builder.create()
-                                .setName("TestProduct3")
-                                .setManufacturer("BMW")
-                                .setCost(30.0)
-                                .setWeight(123)
-                                .setExpirationDate(LocalDateTime.MIN)
-                                .setCount(21L)
-                                .build();
-            newProduct.setId(2L);
 
-            mapper.getConfiguration()
-                    .setAmbiguityIgnored(true)
-                    .setSkipNullEnabled(false);
-            mapper.addMappings(
-                    new PropertyMap<Product, Product>() {
-                        @Override
-                        protected void configure() {
-                            skip(destination.getId());
-                            skip(destination.getUpdatedDate());
-                            skip(destination.getCreatedDate());
-                        }
-                    });
+        @ParameterizedTest
+        @MethodSource("ru.clevertec.clevertecTaskRest.service.IProductServiceImplTest#provideTwoProducts")
+        public void whenGivenIdShouldUpdateIfFound(Product productToUpdate, Product updateDataProduct) {
 
+            doReturn(Optional.of(productToUpdate)).when(productRepository).findById(productToUpdate.getId());
+            doReturn(productToUpdate).when(productRepository).saveAndFlush(productToUpdate);
 
-            doReturn(Optional.of(actualProduct)).when(productRepository).findById(actualProduct.getId());
-            doReturn(actualProduct).when(productRepository).saveAndFlush(actualProduct);
+            assertThat(service.update(productToUpdate.getId(), updateDataProduct)).isEqualTo(updateDataProduct);
 
-            Product expectedProduct = service.update(actualProduct.getId(), newProduct);
-            assertAll(
-                    () -> assertThat(expectedProduct).isEqualTo(newProduct),
-                    () -> assertThat(expectedProduct.getId()).isEqualTo(actualProduct.getId())
-            );
-
-            verify(productRepository).findById(actualProduct.getId());
-            verify(productRepository).saveAndFlush(newProduct);
+            verify(productRepository).findById(productToUpdate.getId());
+            verify(productRepository).saveAndFlush(productToUpdate);
         }
 
         @Test
         public void shouldThrowExceptionWhenSaleCardDoesntExist() {
-            Product actualProduct = Product.Builder.create()
-                    .setName("TestProduct3")
-                    .setManufacturer("BMW")
-                    .setCost(28.0)
-                    .setWeight(123)
-                    .setExpirationDate(LocalDateTime.MIN)
-                    .setCount(21L)
-                    .build();
-            actualProduct.setId(1L);
-            Product newProduct = Product.Builder.create()
-                    .setName("TestProduct3")
-                    .setManufacturer("BMW")
-                    .setCost(30.0)
-                    .setWeight(123)
-                    .setExpirationDate(LocalDateTime.MIN)
-                    .setCount(21L)
-                    .build();
-            newProduct.setId(2L);
+            Product productToUpdate = ProductBuilder.randomValues().build();
+            Product updateDataProduct = ProductBuilder.randomValues().build();
 
-            doReturn(Optional.empty()).when(productRepository).findById(anyLong());
+            doReturn(Optional.empty()).when(productRepository).findById(productToUpdate.getId());
 
-            assertThrows(EntityNotFoundException.class, () -> service.update(actualProduct.getId(), newProduct));
+            assertThrows(EntityNotFoundException.class, () -> service.update(productToUpdate.getId(), updateDataProduct));
         }
 
     }
@@ -257,81 +148,45 @@ public class IProductServiceImplTest {
 
             assertThrows(IllegalArgumentException.class, () -> service.deleteById(id));
             verify(productRepository).deleteById(id);
+
         }
     }
 
 
-    static Stream<Arguments> getProductsWithNegativeCount(){
+    static Stream<Arguments> provideProductWithPositiveCount(){
         return Stream.of(
-                Arguments.of(Product.Builder.create()
-                        .setName("TestProduct1")
-                        .setManufacturer("Toyota")
-                        .setCost(53.9)
-                        .setWeight(355)
-                        .setExpirationDate(LocalDateTime.MIN)
-                        .setCount(-10L)
-                        .build()),
-                Arguments.of(Product.Builder.create()
-                        .setName("TestProduct2")
-                        .setManufacturer("Porsche")
-                        .setCost(21.0)
-                        .setWeight(123)
-                        .setExpirationDate(LocalDateTime.MIN)
-                        .setCount(-3L)
-                        .build()),
-                Arguments.of(Product.Builder.create()
-                        .setName("TestProduct3")
-                        .setManufacturer("BMW")
-                        .setCost(28.0)
-                        .setWeight(123)
-                        .setExpirationDate(LocalDateTime.MIN)
-                        .setCount(-1238L)
-                        .build()),
-                Arguments.of(Product.Builder.create()
-                        .setName("TestProduct4")
-                        .setManufacturer("AUDI")
-                        .setCost(2.0)
-                        .setWeight(11)
-                        .setExpirationDate(LocalDateTime.MIN)
-                        .setCount(-123L)
-                        .build())
+                Arguments.of(ProductBuilder.randomValues().build()),
+                Arguments.of(ProductBuilder.randomValues().build()),
+                Arguments.of(ProductBuilder.randomValues().build()),
+                Arguments.of(ProductBuilder.randomValues().build())
         );
     }
 
-    static Stream<Arguments> getProductsWithPositiveCount(){
+    static Stream<Arguments> provideTwoProducts(){
         return Stream.of(
-                Arguments.of(Product.Builder.create()
-                        .setName("TestProduct1")
-                        .setManufacturer("Toyota")
-                        .setCost(53.9)
-                        .setWeight(355)
-                        .setExpirationDate(LocalDateTime.MIN)
-                        .setCount(4L)
-                        .build()),
-                Arguments.of(Product.Builder.create()
-                        .setName("TestProduct2")
-                        .setManufacturer("Porsche")
-                        .setCost(21.0)
-                        .setWeight(123)
-                        .setExpirationDate(LocalDateTime.MIN)
-                        .setCount(3L)
-                        .build()),
-                Arguments.of(Product.Builder.create()
-                        .setName("TestProduct3")
-                        .setManufacturer("BMW")
-                        .setCost(28.0)
-                        .setWeight(123)
-                        .setExpirationDate(LocalDateTime.MIN)
-                        .setCount(21L)
-                        .build()),
-                Arguments.of(Product.Builder.create()
-                        .setName("TestProduct4")
-                        .setManufacturer("AUDI")
-                        .setCost(2.0)
-                        .setWeight(11)
-                        .setExpirationDate(LocalDateTime.MIN)
-                        .setCount(45L)
-                        .build())
+                Arguments.of(ProductBuilder.randomValues().build(), ProductBuilder.randomValues().build()),
+                Arguments.of(ProductBuilder.randomValues().build(), ProductBuilder.randomValues().build()),
+                Arguments.of(ProductBuilder.randomValues().build(), ProductBuilder.randomValues().build()),
+                Arguments.of(ProductBuilder.randomValues().build(), ProductBuilder.randomValues().build())
         );
+    }
+
+    static Stream<Arguments> provideProductWithNegativeCount(){
+        return provideProductWithPositiveCount()
+                .map(Arguments::get)
+                .map(array -> (Product) array[0])
+                .peek(product -> product.setCount(product.getCount() * -1))
+                .map(Arguments::of);
+    }
+
+    static Stream<Arguments> provideProductsAndPageable() {
+        List<Product> productList = provideProductWithPositiveCount()
+                .map(Arguments::get)
+                .map(array -> (Product) array[0])
+                .toList();
+        return Stream.of(
+                Arguments.of(PageRequest.of(1,5), productList),
+                Arguments.of(PageRequest.of(2, 2), productList),
+                Arguments.of(PageRequest.of(3, 1), productList));
     }
 }

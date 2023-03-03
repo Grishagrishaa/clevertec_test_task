@@ -60,11 +60,7 @@ public class IProductRepositoryTest {
   @ParameterizedTest
   @MethodSource("ru.clevertec.clevertecTaskRest.dao.api.IProductRepositoryTest#provideProductsWithPositiveCount")
   public void shouldFindAll(List<Product> products) {
-    AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
-    products.forEach(product -> {
-      product.setId(id.incrementAndGet());
-      entityManager.persist(product);
-    });
+    persistProducts(products);
 
     List<Product> all = repository.findAll();
 
@@ -74,11 +70,7 @@ public class IProductRepositoryTest {
   @ParameterizedTest
   @MethodSource("ru.clevertec.clevertecTaskRest.dao.api.IProductRepositoryTest#provideProductsWithPositiveCount")
   public void shouldFindById(List<Product> products) {
-    AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
-    products.forEach(product -> {
-      product.setId(id.incrementAndGet());
-      entityManager.persist(product);
-    });
+    persistProducts(products);
 
     Product expectedProduct = repository.findById(products.get(0).getId()).get();
 
@@ -89,15 +81,11 @@ public class IProductRepositoryTest {
   @ParameterizedTest
   @MethodSource("ru.clevertec.clevertecTaskRest.dao.api.IProductRepositoryTest#provideProductsWithPositiveCount")
   public void shouldUpdateById(List<Product> products) {
-    AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
-    products.forEach(product -> {
-      product.setId(id.incrementAndGet());
-      entityManager.persist(product);
-    });
+    persistProducts(products);
 
-    Product updateDataproduct = products.get(1);
+    Product updateDataproduct = products.get(1);//from method source
 
-    Product productFromDb = repository.findById(products.get(2).getId()).get();
+    Product productFromDb = repository.findById(products.get(2).getId()).get();//from db
 
     productFromDb.setName(updateDataproduct.getName());
     productFromDb.setManufacturer(updateDataproduct.getManufacturer());
@@ -106,9 +94,10 @@ public class IProductRepositoryTest {
     productFromDb.setExpirationDate(updateDataproduct.getExpirationDate());
     productFromDb.setCount(updateDataproduct.getCount());
 
-    repository.save(productFromDb);
+    repository.save(productFromDb);//save updated
 
-    Product checkUpdatedProduct = repository.findById(products.get(2).getId()).get();
+
+    Product checkUpdatedProduct = repository.findById(products.get(2).getId()).get();//updated from db
 
     assertAll(
             () -> assertThat(checkUpdatedProduct.getId()).isEqualTo(products.get(2).getId()),
@@ -124,13 +113,9 @@ public class IProductRepositoryTest {
   @ParameterizedTest
   @MethodSource("ru.clevertec.clevertecTaskRest.dao.api.IProductRepositoryTest#provideProductsWithPositiveCount")
   public void shouldDeleteById(List<Product> products) {
-    AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
-    products.forEach(product -> {
-      product.setId(id.incrementAndGet());
-      entityManager.persist(product);
-    });
+    persistProducts(products);
 
-    Long idToDelete = products.get(1).getId();
+    Long idToDelete = products.get(1).getId();//get 1 Entity from methodSource and get id from it
 
     repository.deleteById(idToDelete);
 
@@ -140,22 +125,25 @@ public class IProductRepositoryTest {
   @ParameterizedTest
   @MethodSource("ru.clevertec.clevertecTaskRest.dao.api.IProductRepositoryTest#provideProductsWithPositiveCount")
   public void shouldDeleteAll(List<Product> products) {
-    AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
-    products.forEach(product -> {
-      product.setId(id.incrementAndGet());
-      entityManager.persist(product);
-    });
+    persistProducts(products);
 
     repository.deleteAll();
 
     assertThat(repository.findAll()).isEmpty();
   }
 
+  private void persistProducts(List<Product> products) {
+    AtomicLong id = new AtomicLong(COUNT_OF_ENTITIES_PROVIDED_BY_LIQUIBASE);//IDs START POINT
+    products.forEach(product -> {//setId, Save
+      product.setId(id.incrementAndGet());
+      entityManager.persist(product);
+    });
+  }
+
   static Stream<Arguments> provideProductsWithPositiveCount(){
     return Stream.of(
             Arguments.of(Arrays.asList(
                     Product.Builder.create()
-                            .setId(1L)
                             .setName("TestProduct1")
                             .setManufacturer("Toyota")
                             .setCost(53.9)
@@ -164,7 +152,6 @@ public class IProductRepositoryTest {
                             .setCount(4L)
                             .build(),
                     Product.Builder.create()
-                            .setId(2L)
                             .setName("TestProduct2")
                             .setManufacturer("Porsche")
                             .setCost(21.0)
@@ -173,7 +160,6 @@ public class IProductRepositoryTest {
                             .setCount(3L)
                             .build(),
                     Product.Builder.create()
-                            .setId(3L)
                             .setName("TestProduct3")
                             .setManufacturer("BMW")
                             .setCost(28.0)
@@ -182,7 +168,6 @@ public class IProductRepositoryTest {
                             .setCount(21L)
                             .build(),
                     Product.Builder.create()
-                            .setId(4L)
                             .setName("TestProduct4")
                             .setManufacturer("AUDI")
                             .setCost(2.0)

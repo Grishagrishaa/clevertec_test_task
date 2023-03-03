@@ -1,35 +1,33 @@
 package ru.clevertec.clevertecTaskRest.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import ru.clevertec.clevertecTaskRest.dao.api.ISaleCardRepository;
 import ru.clevertec.clevertecTaskRest.dao.entity.SaleCard;
+import ru.clevertec.clevertecTaskRest.util.ModelMapperUtils;
+import ru.clevertec.clevertecTaskRest.util.builder.SaleCardBuilder;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNullPointerException;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.isNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,81 +40,46 @@ class ISaleCardServiceImplTest {
     @InjectMocks
     private ISaleCardServiceImpl service;
 
+    public ISaleCardServiceImplTest() {
+        mapper = ModelMapperUtils.saleCardMapper();
+    }
+
     @Nested
-    class SaveSaleCardTest{
+    class SaveSaleCardTest {
         @ParameterizedTest
-        @NullSource
-        void saveFailedIfSaleCardIsNull(SaleCard saleCard){
-            doThrow(NullPointerException.class).when(saleCardRepository).saveAndFlush(isNull());
+        @MethodSource("ru.clevertec.clevertecTaskRest.service.ISaleCardServiceImplTest#provideSaleCards")
+        void shouldSaveIfSaleCardProvided(SaleCard saleCard){
+            doReturn(saleCard).when(saleCardRepository).saveAndFlush(saleCard);
 
-
-            assertThatNullPointerException()
-                    .isThrownBy(() -> service.save(saleCard));
-
-
+            assertThat(service.save(saleCard)).isEqualTo(saleCard);
         }
     }
 
     @Nested
     class GetSaleCardTest {
-        @Test
-        void shouldFailGetIfIdNonPresented(){
-            when(saleCardRepository.findById(1L)).thenReturn(Optional.of(new SaleCard()));
-            when(saleCardRepository.findById(2L)).thenReturn(Optional.of(new SaleCard()));
-            when(saleCardRepository.findById(3L)).thenReturn(Optional.of(new SaleCard()));
+        @ParameterizedTest
+        @MethodSource("ru.clevertec.clevertecTaskRest.service.ISaleCardServiceImplTest#provideSaleCards")
+        void shouldFailGetIfIdNonPresented(SaleCard saleCard){
+            doThrow(EntityNotFoundException.class).when(saleCardRepository).findById(saleCard.getId());
 
-            doThrow(EntityNotFoundException.class).when(saleCardRepository).findById(4L);
-            doThrow(EntityNotFoundException.class).when(saleCardRepository).findById(5L);
-
-            assertAll(
-                    () -> assertDoesNotThrow(() -> service.getSaleCardById(1L)),
-                    () -> assertDoesNotThrow(() -> service.getSaleCardById(2L)),
-                    () -> assertDoesNotThrow(() -> service.getSaleCardById(3L)),
-                    () -> assertThrows(EntityNotFoundException.class, () -> service.getSaleCardById(4L)),
-                    () -> assertThrows(EntityNotFoundException.class, () -> service.getSaleCardById(5L))
-            );
+            assertThrows(EntityNotFoundException.class, () -> service.getSaleCardById(saleCard.getId()));
         }
 
-        @Test
-        void shouldGetIfIdPresented(){
-            when(saleCardRepository.findById(1L)).thenReturn(Optional.of(new SaleCard()));
-            when(saleCardRepository.findById(2L)).thenReturn(Optional.of(new SaleCard()));
-            when(saleCardRepository.findById(3L)).thenReturn(Optional.of(new SaleCard()));
+        @ParameterizedTest
+        @MethodSource("ru.clevertec.clevertecTaskRest.service.ISaleCardServiceImplTest#provideSaleCards")
+        void shouldGetSaleCardIfIdPresented(SaleCard saleCard){
+            when(saleCardRepository.findById(saleCard.getId())).thenReturn(Optional.of(saleCard));
 
-            assertAll(
-                    () -> assertThat(service.getSaleCardById(1L)).isInstanceOf(SaleCard.class),
-                    () -> assertThat(service.getSaleCardById(2L)).isInstanceOf(SaleCard.class),
-                    () -> assertThat(service.getSaleCardById(3L)).isInstanceOf(SaleCard.class)
-            );
+            assertThat(service.getSaleCardById(saleCard.getId())).isEqualTo(saleCard);//todo refactor
         }
 
-        @DisplayName("Page of saleCards: :")
-        @ParameterizedTest(name = "{index} => {0}, {1}")
-        @CsvSource(delimiter = '|', textBlock = """
-                    testCase1   |   1  |   5  |
-                    testCase2   |   2  |   2  |
-                    testCase3   |   3  |   1  |
-                """)
-        void shouldReturnSaleCardsPage(String description, Integer page, Integer size){
-            PageRequest pageable = PageRequest.of(page, size);
+        @ParameterizedTest
+        @MethodSource("ru.clevertec.clevertecTaskRest.service.ISaleCardServiceImplTest#provideProductsAndPageable")
+        void shouldReturnSaleCardsPage(Pageable pageable, List<SaleCard> saleCardList){
+            Page<SaleCard> actualPage = new PageImpl<>(saleCardList, pageable, saleCardList.size());
 
-            List<SaleCard> productList = List.of(SaleCard.Builder.create()
-                                                            .setSalePercentage(10)
-                                                            .setYear(2021L)
-                                                            .build(),
-                                                 SaleCard.Builder.create()
-                                                            .setSalePercentage(20)
-                                                            .setYear(2022L)
-                                                            .build(),
-                                                 SaleCard.Builder.create()
-                                                            .setSalePercentage(30)
-                                                            .setYear(2023L)
-                                                            .build());
-
-            Page<SaleCard> actualPage = new PageImpl<>(productList, pageable, productList.size());
-
-            BDDMockito.given(saleCardRepository.findAll(pageable))
-                    .willReturn(new PageImpl<>(productList, pageable, productList.size()));
+            doReturn(new PageImpl<>(saleCardList, pageable, saleCardList.size()))
+                    .when(saleCardRepository).findAll(pageable);
 
             assertEquals(service.getAllSaleCards(pageable), actualPage);
             verify(saleCardRepository).findAll(pageable);
@@ -125,70 +88,32 @@ class ISaleCardServiceImplTest {
 
     @Nested
     class UpdateSaleCardTest {
-        @Test
-        public void whenGivenIdShouldUpdateSaleCardIfFound() {
-            SaleCard actualSaleCard = SaleCard.Builder.create()
-                    .setSalePercentage(10)
-                    .setYear(2021L)
-                    .build();
-            actualSaleCard.setId(1L);
+        @ParameterizedTest
+        @MethodSource("ru.clevertec.clevertecTaskRest.service.ISaleCardServiceImplTest#provideTwoSaleCards")
+        public void whenGivenIdShouldUpdateSaleCardIfFound(SaleCard saleCardToUpdate, SaleCard updateDataSaleCard) {
 
-            SaleCard newSaleCard = SaleCard.Builder.create()
-                    .setSalePercentage(20)
-                    .setYear(2022L)
-                    .build();
-            newSaleCard.setId(2L);
+            doReturn(Optional.of(saleCardToUpdate)).when(saleCardRepository).findById(saleCardToUpdate.getId());
+            doReturn(saleCardToUpdate).when(saleCardRepository).saveAndFlush(saleCardToUpdate);
 
-            mapper.getConfiguration()
-                    .setAmbiguityIgnored(true)
-                    .setSkipNullEnabled(false);
-            mapper.addMappings(
-                    new PropertyMap<SaleCard, SaleCard>() {
-                        @Override
-                        protected void configure() {
-                            skip(destination.getId());
-                            skip(destination.getUpdatedDate());
-                            skip(destination.getCreatedDate());
-                        }
-                    });
+            assertThat(service.update(saleCardToUpdate.getId(), updateDataSaleCard)).isEqualTo(updateDataSaleCard);
 
-
-            doReturn(Optional.of(actualSaleCard)).when(saleCardRepository).findById(actualSaleCard.getId());
-            doReturn(actualSaleCard).when(saleCardRepository).saveAndFlush(actualSaleCard);
-
-            SaleCard expectedSaleProduct = service.update(actualSaleCard.getId(), newSaleCard);
-            assertAll(
-                    () -> assertThat(expectedSaleProduct).isEqualTo(newSaleCard),
-                    () -> assertThat(expectedSaleProduct.getId()).isEqualTo(actualSaleCard.getId())
-            );
-
-            verify(saleCardRepository).findById(actualSaleCard.getId());
-            verify(saleCardRepository).saveAndFlush(newSaleCard);
+            verify(saleCardRepository).findById(saleCardToUpdate.getId());
+            verify(saleCardRepository).saveAndFlush(updateDataSaleCard);
         }
 
-        @Test
-        public void shouldThrowExceptionWhenUserDoesntExist() {
-            SaleCard actualSaleCard = SaleCard.Builder.create()
-                    .setSalePercentage(10)
-                    .setYear(2021L)
-                    .build();
-            actualSaleCard.setId(1L);
+        @ParameterizedTest
+        @MethodSource("ru.clevertec.clevertecTaskRest.service.ISaleCardServiceImplTest#provideTwoSaleCards")
+        public void shouldThrowExceptionWhenUserDoesntExist(SaleCard saleCardToUpdate, SaleCard updateDataSaleCard) {
 
-            SaleCard newSaleCard = SaleCard.Builder.create()
-                    .setSalePercentage(20)
-                    .setYear(2022L)
-                    .build();
-            newSaleCard.setId(2L);
+            doReturn(Optional.empty()).when(saleCardRepository).findById(saleCardToUpdate.getId());
 
-            doReturn(Optional.empty()).when(saleCardRepository).findById(anyLong());
-
-            assertThrows(EntityNotFoundException.class, () -> service.update(actualSaleCard.getId(), newSaleCard));
+            assertThrows(EntityNotFoundException.class, () -> service.update(saleCardToUpdate.getId(), updateDataSaleCard));
         }
 
     }
 
     @Nested
-    class DeleteProductTest{
+    class DeleteSaleCardTest {
         @ParameterizedTest
         @ValueSource(longs = {1, 2, 3})
         void shouldDeleteWithGivenId(Long id){
@@ -208,5 +133,35 @@ class ISaleCardServiceImplTest {
             verify(saleCardRepository).deleteById(id);
         }
     }
+
+    static Stream<Arguments> provideSaleCards(){
+        return Stream.of(
+                Arguments.of(
+                        SaleCardBuilder.randomValues().build(),
+                        SaleCardBuilder.randomValues().build(),
+                        SaleCardBuilder.randomValues().build()
+                ));
+    }
+
+    static Stream<Arguments> provideTwoSaleCards(){
+        return Stream.of(
+                Arguments.of(SaleCardBuilder.randomValues().build(), SaleCardBuilder.randomValues().build()),
+                Arguments.of(SaleCardBuilder.randomValues().build(), SaleCardBuilder.randomValues().build()),
+                Arguments.of(SaleCardBuilder.randomValues().build(), SaleCardBuilder.randomValues().build()),
+                Arguments.of(SaleCardBuilder.randomValues().build(), SaleCardBuilder.randomValues().build())
+        );
+    }
+
+    static Stream<Arguments> provideProductsAndPageable() {
+        List<SaleCard> saleCardList = provideSaleCards()
+                .map(Arguments::get)
+                .map(array -> (SaleCard) array[0])
+                .toList();
+        return Stream.of(
+                Arguments.of(PageRequest.of(1,5), saleCardList),
+                Arguments.of(PageRequest.of(2, 2), saleCardList),
+                Arguments.of(PageRequest.of(3, 1), saleCardList));
+    }
+
 
 }
