@@ -1,11 +1,14 @@
 package ru.clevertec.clevertecTaskRest.dao.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.hibernate.annotations.Columns;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Validated
@@ -23,6 +26,7 @@ public class Product extends BaseEntity{
     }
 
     public Product(Builder builder) {
+        setId(builder.id);
         this.name = builder.name;
         this.manufacturer = builder.manufacturer;
         this.expirationDate = builder.expirationDate;
@@ -82,6 +86,7 @@ public class Product extends BaseEntity{
     }
 
     public static class Builder{
+        private Long id;
         private String name;
         private String manufacturer;
         private LocalDateTime expirationDate;
@@ -91,6 +96,11 @@ public class Product extends BaseEntity{
 
 
         private Builder() {
+        }
+
+        public Builder setId(Long id) {
+            this.id = id;
+            return this;
         }
 
         public Builder setName(String name) {
@@ -129,5 +139,31 @@ public class Product extends BaseEntity{
         public Product build(){
             return new Product(this);
         }
+    }
+
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "name='" + name + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", expirationDate=" + expirationDate +
+                ", weight=" + weight +
+                ", cost=" + cost +
+                ", count=" + count +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(name, product.name) && Objects.equals(manufacturer, product.manufacturer) && Objects.equals(expirationDate, product.expirationDate) && Objects.equals(weight, product.weight) && Objects.equals(cost, product.cost) && Objects.equals(count, product.count);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, manufacturer, expirationDate, weight, cost, count);
     }
 }

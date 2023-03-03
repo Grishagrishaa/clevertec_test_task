@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS shop.product
     cost integer,
     count bigint,
     expiration_date timestamp(6) without time zone NOT NULL,
-    manufacturer character varying(25) COLLATE pg_catalog."default",
-    name character varying(25) COLLATE pg_catalog."default",
+    manufacturer character varying(25),
+    name character varying(25),
     weight integer,
     CONSTRAINT product_pkey PRIMARY KEY (id),
     CONSTRAINT product_cost_check CHECK (cost >= 1),
@@ -26,7 +26,15 @@ CREATE TABLE IF NOT EXISTS shop.sale_card
     sale_percentage integer,
     year bigint,
     CONSTRAINT sale_card_pkey PRIMARY KEY (id)
-)
+);
+
+
+--changeset grisha:3
+CREATE SEQUENCE "PRODUCT_SEQ"
+    MINVALUE 9
+    MAXVALUE 999999999
+    INCREMENT BY 50
+    START WITH 202700;
 
 
 

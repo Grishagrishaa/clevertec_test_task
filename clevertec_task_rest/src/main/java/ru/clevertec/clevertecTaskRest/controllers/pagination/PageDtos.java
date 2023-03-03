@@ -2,8 +2,9 @@ package ru.clevertec.clevertecTaskRest.controllers.pagination;
 
 
 import java.util.List;
+import java.util.Objects;
 
-public class MyPage<T>{
+public class PageDtos<T>{
     private Integer number;
     private Integer size;
     private Integer totalPages;
@@ -13,10 +14,10 @@ public class MyPage<T>{
     private Boolean last;
     private List<T> content;
 
-    public MyPage(Integer number, Integer size,
-                  Integer totalPages, Long totalElements,
-                  Boolean first, Integer numberOfElements,
-                  Boolean last, List<T> content) {
+    public PageDtos(Integer number, Integer size,
+                    Integer totalPages, Long totalElements,
+                    Boolean first, Integer numberOfElements,
+                    Boolean last, List<T> content) {
         this.number = number;
         this.size = size;
         this.totalPages = totalPages;
@@ -27,7 +28,7 @@ public class MyPage<T>{
         this.content = content;
     }
 
-    public MyPage(Builder<T> builder) {
+    public PageDtos(Builder<T> builder) {
         this.number = builder.number;
         this.size = builder.size;
         this.totalPages = builder.totalPages;
@@ -38,7 +39,7 @@ public class MyPage<T>{
         this.content = builder.content;
     }
 
-    public MyPage() {
+    public PageDtos() {
     }
 
     public Integer getNumber() {
@@ -162,8 +163,35 @@ public class MyPage<T>{
             return new Builder<>();
         }
 
-        public MyPage<T> build(){
-            return new MyPage<>(this);
+        public PageDtos<T> build(){
+            return new PageDtos<>(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PageDtos<?> pageDtos = (PageDtos<?>) o;
+        return Objects.equals(number, pageDtos.number) && Objects.equals(size, pageDtos.size) && Objects.equals(totalPages, pageDtos.totalPages) && Objects.equals(totalElements, pageDtos.totalElements) && Objects.equals(first, pageDtos.first) && Objects.equals(numberOfElements, pageDtos.numberOfElements) && Objects.equals(last, pageDtos.last) && Objects.equals(content, pageDtos.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(number, size, totalPages, totalElements, first, numberOfElements, last, content);
+    }
+
+    @Override
+    public String toString() {
+        return "MyPage{" +
+                "number=" + number +
+                ", size=" + size +
+                ", totalPages=" + totalPages +
+                ", totalElements=" + totalElements +
+                ", first=" + first +
+                ", numberOfElements=" + numberOfElements +
+                ", last=" + last +
+                ", content=" + content +
+                '}';
     }
 }
