@@ -3,6 +3,7 @@ package ru.clevertec.clevertecTaskRest.dao.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.hibernate.annotations.Columns;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +15,7 @@ import java.util.Objects;
 @Validated
 @Table(name = "product", schema = "shop")
 public class Product extends BaseEntity{
+    @Pattern(regexp = "[A-Za-z0-9 ]+", message = "INVALID PRODUCT NAME")
     private String name;
     private String manufacturer;
     private LocalDateTime expirationDate;
