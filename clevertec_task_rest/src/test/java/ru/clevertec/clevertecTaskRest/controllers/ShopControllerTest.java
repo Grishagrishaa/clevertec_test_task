@@ -17,10 +17,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.clevertec.clevertecTaskRest.controllers.pagination.MyPage;
+import ru.clevertec.clevertecTaskRest.controllers.pagination.PageDtos;
 import ru.clevertec.clevertecTaskRest.service.IShopServiceImpl;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadSaleCardDto;
+import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadSaleCardDto;
 import ru.clevertec.clevertecTaskRest.service.dto.Receipt;
 
 import java.time.LocalDateTime;
@@ -36,9 +36,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(Controller.class)
+@WebMvcTest(ReceiptController.class)
 @ExtendWith(SpringExtension.class)
-public class ControllerTest {
+public class ReceiptControllerTest {
     @MockBean
     private IShopServiceImpl shopService;
 
@@ -50,7 +50,7 @@ public class ControllerTest {
 
     private StringBuffer buffer;
 
-    public ControllerTest() {
+    public ReceiptControllerTest() {
         this.buffer= new StringBuffer();
     }
 
@@ -61,7 +61,7 @@ public class ControllerTest {
         void shouldReturnMyPageOfProducts(Pageable pageable, List<ReadProductDto> productList) throws Exception {
             PageImpl<ReadProductDto> springPage = new PageImpl<>(productList, pageable, productList.size());//for easy MyPage initialization
 
-            MyPage<ReadProductDto> actualPage = MyPage.Builder.<ReadProductDto>create()
+            PageDtos<ReadProductDto> actualPage = PageDtos.Builder.<ReadProductDto>create()
                     .setContent(springPage.getContent())
                     .setFirst(springPage.isFirst())
                     .setLast(springPage.isLast())
@@ -86,7 +86,7 @@ public class ControllerTest {
         void shouldReturnEmptyPageOfProductsIfNoProductsInDb() throws Exception {
             Page<ReadProductDto> springPage = Page.empty();//for easy MyPage initialization
 
-            MyPage<ReadProductDto> actualPage = MyPage.Builder.<ReadProductDto>create()
+            PageDtos<ReadProductDto> actualPage = PageDtos.Builder.<ReadProductDto>create()
                     .setContent(springPage.getContent())
                     .setFirst(springPage.isFirst())
                     .setLast(springPage.isLast())
@@ -114,7 +114,7 @@ public class ControllerTest {
         void shouldReturnMyPageOfSaleCards(Pageable pageable, List<ReadSaleCardDto> productList) throws Exception {
             PageImpl<ReadSaleCardDto> springPage = new PageImpl<>(productList, pageable, productList.size());//for easy MyPage initialization
 
-            MyPage<ReadSaleCardDto> actualPage = MyPage.Builder.<ReadSaleCardDto>create()
+            PageDtos<ReadSaleCardDto> actualPage = PageDtos.Builder.<ReadSaleCardDto>create()
                     .setContent(springPage.getContent())
                     .setFirst(springPage.isFirst())
                     .setLast(springPage.isLast())
@@ -139,7 +139,7 @@ public class ControllerTest {
         void shouldNotReturnEmptyPageOfOfSaleCardsIfNoSaleCardsInDb() throws Exception {
             Page<ReadSaleCardDto> springPage = Page.empty();//for easy MyPage initialization
 
-            MyPage<ReadSaleCardDto> actualPage = MyPage.Builder.<ReadSaleCardDto>create()
+            PageDtos<ReadSaleCardDto> actualPage = PageDtos.Builder.<ReadSaleCardDto>create()
                     .setContent(springPage.getContent())
                     .setFirst(springPage.isFirst())
                     .setLast(springPage.isLast())

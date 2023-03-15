@@ -1,6 +1,7 @@
 package ru.clevertec.clevertecTaskRest.service.dto;
 
 import ru.clevertec.clevertecTaskRest.dao.entity.SaleCard;
+
 import ru.clevertec.clevertecTaskRest.json.annotations.JsonElement;
 import ru.clevertec.clevertecTaskRest.json.annotations.JsonSerializable;
 
@@ -54,7 +55,6 @@ public class Receipt {
             this.totalSum = totalSum * ((100.0 - saleCard.getSalePercentage())/100);
             return this;
         }
-
 
         public static Builder create(){
             return new Builder();

@@ -1,7 +1,7 @@
 package ru.clevertec.clevertecTaskRest.controllers;
 
 import ru.clevertec.clevertecTaskRest.controllers.api.IShopController;
-import ru.clevertec.clevertecTaskRest.controllers.pagination.MyPage;
+import ru.clevertec.clevertecTaskRest.controllers.pagination.PageDtos;
 import ru.clevertec.clevertecTaskRest.service.IShopServiceImpl;
 import ru.clevertec.clevertecTaskRest.service.api.IShopService;
 import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
@@ -46,13 +46,13 @@ public class Controller implements IShopController {
     }
 
     @Override
-    public ResponseEntity<MyPage<ReadProductDto>> getAllProducts(Integer page, Integer size) {
+    public ResponseEntity<PageDtos<ReadProductDto>> getAllProducts(Integer page, Integer size) {
         return new ResponseEntity<>(shopService.getAllProducts(PageRequest.of(page, size)),
                                     HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<MyPage<ReadSaleCardDto>> getAllSaleCards(Integer page, Integer size) {
+    public ResponseEntity<PageDtos<ReadSaleCardDto>> getAllSaleCards(Integer page, Integer size) {
         return new ResponseEntity<>(shopService.getAllSaleCards(PageRequest.of(page, size)),
                                     HttpStatus.OK);
     }

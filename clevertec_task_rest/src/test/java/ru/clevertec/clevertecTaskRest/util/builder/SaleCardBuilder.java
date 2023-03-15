@@ -1,5 +1,7 @@
 package ru.clevertec.clevertecTaskRest.util.builder;
 
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.clevertec.clevertecTaskRest.dao.entity.SaleCard;
 import ru.clevertec.clevertecTaskRest.service.dto.ReadSaleCardDto;
 
@@ -7,6 +9,8 @@ import java.time.LocalDateTime;
 
 import static ru.clevertec.clevertecTaskRest.util.TestUtils.*;
 
+@Setter
+@NoArgsConstructor
 public class SaleCardBuilder {
     private Long id;
     private LocalDateTime createdDate;
@@ -21,8 +25,7 @@ public class SaleCardBuilder {
         this.year = 2022L;
         this.salePercentage = 30;
     }
-
-
+    
     public static SaleCardBuilder clone(SaleCard saleCardToClone){
         SaleCardBuilder saleCardBuilder = new SaleCardBuilder();
 
@@ -53,31 +56,6 @@ public class SaleCardBuilder {
                 .setYear(saleCardToConvert.getYear())
                 .setSalePercentage(saleCardToConvert.getSalePercentage())
                 .build();
-    }
-
-    public SaleCardBuilder setId(Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public SaleCardBuilder setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-        return this;
-    }
-
-    public SaleCardBuilder setUpdatedDate(LocalDateTime updatedDate) {
-        this.updatedDate = updatedDate;
-        return this;
-    }
-
-    public SaleCardBuilder setYear(Long year) {
-        this.year = year;
-        return this;
-    }
-
-    public SaleCardBuilder setSalePercentage(Integer salePercentage) {
-        this.salePercentage = salePercentage;
-        return this;
     }
 
     public SaleCard build(){

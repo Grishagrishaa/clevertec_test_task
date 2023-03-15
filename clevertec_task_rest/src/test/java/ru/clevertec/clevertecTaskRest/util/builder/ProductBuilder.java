@@ -1,5 +1,7 @@
 package ru.clevertec.clevertecTaskRest.util.builder;
 
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.clevertec.clevertecTaskRest.dao.entity.Product;
 import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
 
@@ -7,6 +9,8 @@ import java.time.LocalDateTime;
 
 import static ru.clevertec.clevertecTaskRest.util.TestUtils.*;
 
+@Setter
+@NoArgsConstructor
 public class ProductBuilder {
     private Long id;
     private LocalDateTime createdDate;
@@ -72,51 +76,6 @@ public class ProductBuilder {
                 .setExpirationDate(productToConvert.getExpirationDate())
                 .setCount(productToConvert.getCount())
                 .build();
-    }
-
-    public ProductBuilder setId(Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public ProductBuilder setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-        return this;
-    }
-
-    public ProductBuilder setUpdatedDate(LocalDateTime updatedDate) {
-        this.updatedDate = updatedDate;
-        return this;
-    }
-
-    public ProductBuilder setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public ProductBuilder setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
-        return this;
-    }
-
-    public ProductBuilder setExpirationDate(LocalDateTime expirationDate) {
-        this.expirationDate = expirationDate;
-        return this;
-    }
-
-    public ProductBuilder setWeight(Integer weight) {
-        this.weight = weight;
-        return this;
-    }
-
-    public ProductBuilder setCost(Double cost) {
-        this.cost = cost;
-        return this;
-    }
-
-    public ProductBuilder setCount(Long count) {
-        this.count = count;
-        return this;
     }
 
     public Product build(){
