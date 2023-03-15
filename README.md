@@ -1,44 +1,4 @@
-# Clevertec test task
-
-Folder consist of 2 modules: **`console`** and **`RESTful`** applications. 
-
-# Console application  
-## Technology stack: 
-**`Java only`**
-
-## How to build
-1. Build project: gradle clean build
-2. To run: java -jar ./build/libs/ClevertecTask-1.0-SNAPSHOT.jar 
-
-## Example commands: 
-**`Console mode`**: 
-
-*Command*: 1-1 2-1 3-1 or 1-1 2-1 3-1 card-1234
-
-*Response:*
-```
-1. Adidas Originals___400 RUB
-2. Vodar___100 RUB
-3. IPhone 11 Pro Max___10000 RUB
-------------------
-Total Sum - 7350,000000
-```
-
-**`File mode`**:
-
-*Command in file*: 'absolutePath' or 'absolutePath' card-1234 
-
-*Response in file*: 
-```
-1. Adidas Originals___400 RUB
-2. Vodar___100 RUB
-3. IPhone 11 Pro Max___10000 RUB
-------------------
-Total Sum - 7350,000000
-```
-
-# RESTful application  
-
+# Clevertec RESTful application test task
 
 
 ##  Technology stack:
@@ -53,16 +13,16 @@ Total Sum - 7350,000000
 
 |   HTTP Method   | URL                                                          | Description                       |
 |:---------------:|--------------------------------------------------------------|-----------------------------------|
-|      `GET`      | localhost/api/v1/products                                    | Get all products                  |
-|      `PUT`      | localhost/api/v1/products?itemId=3&itemId=3&salecard-1234    | Get receipt.                      |
-|      `GET`      | localhost/api/v1/salecards                                   | Get all salecards                 |
+|      `GET`      | localhost/api/v1/shop/products                               | Get all products                  |
+|      `PUT`      | localhost/api/v1/shop/buy?itemId=3&itemId=3&salecard-1234    | Get receipt.                      |
+|      `GET`      | localhost/api/v1/shop/salecards                              | Get all salecards                 |
 
 
 ## Get All products
 
 *Request:*
 
-`localhost/api/v1/products?size=3)`
+`localhost/api/v1/shop/products?size=3`
 
 *Response:*
 ```json
@@ -110,7 +70,7 @@ Total Sum - 7350,000000
 
 *Request:*
 
-`localhost/api/v1/products?itemId=3&itemId=3`
+`localhost/api/v1/shop/buy?itemId=3&itemId=3`
 
 *Response:*
 ```
@@ -126,7 +86,7 @@ Total Sum - 20000.000000
 
 *Request:*
 
-`localhost/api/v1/salecards?size=2`
+`localhost/api/v1/shop/salecards?size=2`
 
 *Response:*
 ```json
