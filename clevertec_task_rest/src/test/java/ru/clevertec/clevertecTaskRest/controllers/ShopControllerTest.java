@@ -19,8 +19,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.clevertec.clevertecTaskRest.controllers.pagination.PageDtos;
 import ru.clevertec.clevertecTaskRest.service.IShopServiceImpl;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadSaleCardDto;
+import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadSaleCardDto;
 import ru.clevertec.clevertecTaskRest.service.dto.Receipt;
 
 import java.time.LocalDateTime;
@@ -36,9 +36,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(Controller.class)
+@WebMvcTest(ReceiptController.class)
 @ExtendWith(SpringExtension.class)
-public class ControllerTest {
+public class ReceiptControllerTest {
     @MockBean
     private IShopServiceImpl shopService;
 
@@ -50,7 +50,7 @@ public class ControllerTest {
 
     private StringBuffer buffer;
 
-    public ControllerTest() {
+    public ReceiptControllerTest() {
         this.buffer= new StringBuffer();
     }
 
