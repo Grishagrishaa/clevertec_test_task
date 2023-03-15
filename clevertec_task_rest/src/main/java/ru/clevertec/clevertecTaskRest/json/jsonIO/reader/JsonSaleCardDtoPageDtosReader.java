@@ -1,20 +1,20 @@
 package ru.clevertec.clevertecTaskRest.json.jsonIO.reader;
 
-import ru.clevertec.clevertecTaskRest.controllers.pagination.MyPage;
+import ru.clevertec.clevertecTaskRest.controllers.pagination.PageDtos;
 import ru.clevertec.clevertecTaskRest.json.jsonIO.reader.api.IReader;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadSaleCardDto;
+import ru.clevertec.clevertecTaskRest.service.dto.readDto.ReadSaleCardDto;
 
 import java.util.Arrays;
 import java.util.Map;
 
-public class JsonSaleCardDtoPageDtosReader implements IReader<MyPage<ReadSaleCardDto>> {
+public class JsonSaleCardDtoPageDtosReader implements IReader<PageDtos<ReadSaleCardDto>> {
     private final JsonSaleCardDtoReader readSaleCardDtoReader = new JsonSaleCardDtoReader();
 
     @Override
-    public MyPage<ReadSaleCardDto> deserialize(String json) {
+    public PageDtos<ReadSaleCardDto> deserialize(String json) {
         Map<String, String> valuesMap = parseJsonWithList(json, "content");
 
-        return MyPage.Builder.<ReadSaleCardDto>create()
+        return PageDtos.Builder.<ReadSaleCardDto>create()
                 .setContent(valuesMap.get("content") != null ?
                                         Arrays.stream(valuesMap.get("content").replaceAll("[^a-zA-Z0-9,}:]", "").split("},"))
                                               .map(readSaleCardDtoReader::deserialize).toList() :
@@ -31,6 +31,6 @@ public class JsonSaleCardDtoPageDtosReader implements IReader<MyPage<ReadSaleCar
 
     @Override
     public boolean isReadable(Class<?> clazz) {
-        return clazz.getSimpleName().equalsIgnoreCase(MyPage.class.getSimpleName());
+        return clazz.getSimpleName().equalsIgnoreCase(PageDtos.class.getSimpleName());
     }
 }

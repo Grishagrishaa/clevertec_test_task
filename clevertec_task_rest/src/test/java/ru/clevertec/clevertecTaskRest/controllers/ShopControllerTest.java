@@ -19,8 +19,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.clevertec.clevertecTaskRest.controllers.pagination.PageDtos;
 import ru.clevertec.clevertecTaskRest.service.IShopServiceImpl;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadProductDto;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadSaleCardDto;
+import ru.clevertec.clevertecTaskRest.service.dto.readDto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.readDto.ReadSaleCardDto;
 import ru.clevertec.clevertecTaskRest.service.dto.Receipt;
 
 import java.time.LocalDateTime;

@@ -1,7 +1,7 @@
 package ru.clevertec.clevertecTaskRest.service.dto;
 
 import ru.clevertec.clevertecTaskRest.dao.entity.SaleCard;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.readDto.ReadProductDto;
 
 import ru.clevertec.clevertecTaskRest.json.annotations.JsonElement;
 import ru.clevertec.clevertecTaskRest.json.annotations.JsonSerializable;

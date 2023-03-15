@@ -10,14 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.clevertecTaskRest.controllers.api.IEntityController;
 import ru.clevertec.clevertecTaskRest.controllers.pagination.PageDtos;
-import ru.clevertec.clevertecTaskRest.dao.entity.Product;
 import ru.clevertec.clevertecTaskRest.dao.entity.SaleCard;
-import ru.clevertec.clevertecTaskRest.service.api.IProductService;
 import ru.clevertec.clevertecTaskRest.service.api.ISaleCardService;
-import ru.clevertec.clevertecTaskRest.service.dto.CreateDto.CreateProductDto;
-import ru.clevertec.clevertecTaskRest.service.dto.CreateDto.CreateSaleCardDto;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadProductDto;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadSaleCardDto;
+import ru.clevertec.clevertecTaskRest.service.dto.createDto.CreateSaleCardDto;
+import ru.clevertec.clevertecTaskRest.service.dto.readDto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.readDto.ReadSaleCardDto;
 
 import java.util.List;
 

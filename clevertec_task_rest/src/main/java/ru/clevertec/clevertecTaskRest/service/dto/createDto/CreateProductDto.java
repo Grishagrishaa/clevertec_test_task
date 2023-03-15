@@ -1,4 +1,4 @@
-package ru.clevertec.clevertecTaskRest.service.dto.CreateDto;
+package ru.clevertec.clevertecTaskRest.service.dto.createDto;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

@@ -1,7 +1,7 @@
 package ru.clevertec.clevertecTaskRest.conversion;
 
 import ru.clevertec.clevertecTaskRest.dao.entity.Product;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.readDto.ReadProductDto;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -12,8 +12,6 @@ public class ProductToReadProductDtoConverter implements Converter<Product, Read
     public ReadProductDto convert(Product product) {
         return ReadProductDto.Builder.create()
                 .setId(product.getId())
-                .setCreatedDate(product.getCreatedDate())
-                .setUpdateDate(product.getUpdatedDate())
                 .setName(product.getName())
                 .setManufacturer(product.getManufacturer())
                 .setWeight(product.getWeight())

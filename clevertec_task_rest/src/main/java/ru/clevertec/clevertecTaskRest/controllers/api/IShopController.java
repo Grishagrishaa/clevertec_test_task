@@ -1,8 +1,8 @@
 package ru.clevertec.clevertecTaskRest.controllers.api;
 
 import ru.clevertec.clevertecTaskRest.controllers.pagination.PageDtos;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadProductDto;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadSaleCardDto;
+import ru.clevertec.clevertecTaskRest.service.dto.readDto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.readDto.ReadSaleCardDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,9 +13,9 @@ import java.util.List;
 
 @RequestMapping("${app.shopController.path}")
 public interface IShopController {
-    @PutMapping("/products")
-    ResponseEntity<String> getReceipt(@RequestParam(required = true, name = "itemId")List<Long> itemId,
-                                      @RequestParam(required = false, name = "saleCardId")Long saleCardId);
+    @PutMapping("/buy")
+    ResponseEntity<String> calculateReceipt(@RequestParam(required = true, name = "itemId")List<Long> itemId,
+                                            @RequestParam(required = false, name = "saleCardId")Long saleCardId);
 
     @GetMapping("/products")
     ResponseEntity<PageDtos<ReadProductDto>> getAllProducts(@RequestParam(required = false, defaultValue = "0", name = "page") Integer page,

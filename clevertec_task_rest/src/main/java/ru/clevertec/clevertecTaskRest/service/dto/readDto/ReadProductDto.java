@@ -1,4 +1,4 @@
-package ru.clevertec.clevertecTaskRest.service.dto;
+package ru.clevertec.clevertecTaskRest.service.dto.readDto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import ru.clevertec.clevertecTaskRest.json.annotations.JsonElement;

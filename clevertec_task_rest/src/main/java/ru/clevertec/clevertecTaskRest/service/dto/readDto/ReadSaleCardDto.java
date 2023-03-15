@@ -1,5 +1,4 @@
-package ru.clevertec.clevertecTaskRest.service.dto;
-
+package ru.clevertec.clevertecTaskRest.service.dto.readDto;
 
 import ru.clevertec.clevertecTaskRest.json.annotations.JsonElement;
 import ru.clevertec.clevertecTaskRest.json.annotations.JsonSerializable;

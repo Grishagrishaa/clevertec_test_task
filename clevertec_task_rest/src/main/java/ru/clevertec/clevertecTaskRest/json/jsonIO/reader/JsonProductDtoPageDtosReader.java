@@ -1,20 +1,20 @@
 package ru.clevertec.clevertecTaskRest.json.jsonIO.reader;
 
-import ru.clevertec.clevertecTaskRest.controllers.pagination.MyPage;
+import ru.clevertec.clevertecTaskRest.controllers.pagination.PageDtos;
 import ru.clevertec.clevertecTaskRest.json.jsonIO.reader.api.IReader;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.readDto.ReadProductDto;
 
 import java.util.Arrays;
 import java.util.Map;
 
-public class JsonProductDtoPageDtosReader implements IReader<MyPage<ReadProductDto>> {
+public class JsonProductDtoPageDtosReader implements IReader<PageDtos<ReadProductDto>> {
     private final JsonProductDtoReader readProductDtoReader = new JsonProductDtoReader();
 
     @Override
-    public MyPage<ReadProductDto> deserialize(String json) {
+    public PageDtos<ReadProductDto> deserialize(String json) {
         Map<String, String> valuesMap = parseJsonWithList(json, "content");
 
-        return MyPage.Builder.<ReadProductDto>create()
+        return PageDtos.Builder.<ReadProductDto>create()
                 .setContent(valuesMap.get("content") != null ?
                                         Arrays.stream(valuesMap.get("content").replaceAll("[^a-zA-Z0-9,.}:]", "").split("},"))
                                               .map(readProductDtoReader::deserialize).toList() :
@@ -31,7 +31,7 @@ public class JsonProductDtoPageDtosReader implements IReader<MyPage<ReadProductD
 
     @Override
     public boolean isReadable(Class<?> clazz) {
-        return clazz.getSimpleName().equalsIgnoreCase(MyPage.class.getSimpleName());
+        return clazz.getSimpleName().equalsIgnoreCase(PageDtos.class.getSimpleName());
 
     }
 }

@@ -1,7 +1,7 @@
 package ru.clevertec.clevertecTaskRest.json.jsonIO.reader;
 
 import ru.clevertec.clevertecTaskRest.json.jsonIO.reader.api.IReader;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.readDto.ReadProductDto;
 
 import java.util.Map;
 

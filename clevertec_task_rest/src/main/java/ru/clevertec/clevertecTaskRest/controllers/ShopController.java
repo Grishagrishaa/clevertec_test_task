@@ -4,8 +4,8 @@ import ru.clevertec.clevertecTaskRest.controllers.api.IShopController;
 import ru.clevertec.clevertecTaskRest.controllers.pagination.PageDtos;
 import ru.clevertec.clevertecTaskRest.service.IShopServiceImpl;
 import ru.clevertec.clevertecTaskRest.service.api.IShopService;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadProductDto;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadSaleCardDto;
+import ru.clevertec.clevertecTaskRest.service.dto.readDto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.readDto.ReadSaleCardDto;
 import ru.clevertec.clevertecTaskRest.service.dto.Receipt;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class ShopController implements IShopController {
     }
 
     @Override
-    public ResponseEntity<String> getReceipt(List<Long> itemIds, Long saleCardId) {
+    public ResponseEntity<String> calculateReceipt(List<Long> itemIds, Long saleCardId) {
         strBuff.setLength(0);
         Receipt receipt = saleCardId == null ? shopService.getReceipt(itemIds) : shopService.getReceipt(itemIds, saleCardId);
 

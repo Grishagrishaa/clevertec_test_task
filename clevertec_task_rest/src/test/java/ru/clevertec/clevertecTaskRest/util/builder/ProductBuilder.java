@@ -1,16 +1,13 @@
 package ru.clevertec.clevertecTaskRest.util.builder;
 
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import ru.clevertec.clevertecTaskRest.dao.entity.Product;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
 
 import java.time.LocalDateTime;
 
 import static ru.clevertec.clevertecTaskRest.util.TestUtils.*;
 
-//@Setter
-//@NoArgsConstructor
+
 public class ProductBuilder {
     private Long id;
     private LocalDateTime createdDate;
@@ -32,9 +29,6 @@ public class ProductBuilder {
         this.weight = 1000;
         this.cost = 10.00;
         this.count = 10_000L;
-    }
-
-    public ProductBuilder() {
     }
 
     public static ProductBuilder clone(Product productToClone){

@@ -3,14 +3,13 @@ package ru.clevertec.clevertecTaskRest.util.builder;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.clevertec.clevertecTaskRest.dao.entity.SaleCard;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadSaleCardDto;
+import ru.clevertec.clevertecTaskRest.service.dto.readDto.ReadSaleCardDto;
 
 import java.time.LocalDateTime;
 
 import static ru.clevertec.clevertecTaskRest.util.TestUtils.*;
 
 @Setter
-@NoArgsConstructor
 public class SaleCardBuilder {
     private Long id;
     private LocalDateTime createdDate;

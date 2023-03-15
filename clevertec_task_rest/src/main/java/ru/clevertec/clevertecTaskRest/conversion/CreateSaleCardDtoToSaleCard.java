@@ -3,7 +3,7 @@ package ru.clevertec.clevertecTaskRest.conversion;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import ru.clevertec.clevertecTaskRest.dao.entity.SaleCard;
-import ru.clevertec.clevertecTaskRest.service.dto.CreateDto.CreateSaleCardDto;
+import ru.clevertec.clevertecTaskRest.service.dto.createDto.CreateSaleCardDto;
 
 @Component
 public class CreateSaleCardDtoToSaleCard implements Converter<CreateSaleCardDto, SaleCard> {

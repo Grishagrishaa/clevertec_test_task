@@ -12,8 +12,8 @@ import ru.clevertec.clevertecTaskRest.controllers.api.IEntityController;
 import ru.clevertec.clevertecTaskRest.controllers.pagination.PageDtos;
 import ru.clevertec.clevertecTaskRest.dao.entity.Product;
 import ru.clevertec.clevertecTaskRest.service.api.IProductService;
-import ru.clevertec.clevertecTaskRest.service.dto.CreateDto.CreateProductDto;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.createDto.CreateProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.readDto.ReadProductDto;
 
 import java.util.List;
 
