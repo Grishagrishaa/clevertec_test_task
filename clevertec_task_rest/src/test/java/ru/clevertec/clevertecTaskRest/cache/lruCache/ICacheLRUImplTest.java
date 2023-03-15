@@ -1,52 +1,66 @@
-package com.baeldung.lrucache;
+package ru.clevertec.clevertecTaskRest.cache.lruCache;
 
-import com.baeldung.lrucache.api.ICache;
-import org.junit.Test;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.IntStream;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import ru.clevertec.clevertecTaskRest.cache.api.ICache;
 
-public class ICacheLRUImplUnitTest {
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ICacheLRUImplTest {
+    private ICache<Long, String> cache = new ICacheLRUImpl<>(5);
 
     @Test
-    public void addSomeDataToCache_WhenGetData_ThenIsEqualWithCacheElement() {
-        ICacheLRUImpl<String, String> lruCache = new ICacheLRUImpl<>(3);
-        lruCache.put("1", "test1");
-        lruCache.put("2", "test2");
-        lruCache.put("3", "test3");
-        assertEquals("test1", lruCache.get("1").get());
-        assertEquals("test2", lruCache.get("2").get());
-        assertEquals("test3", lruCache.get("3").get());
+    public void addDataTest() {
+        cache.put(1L, "1");
+        cache.put(2L, "2");
+        cache.put(3L, "3");
+        cache.put(4L, "4");
+        cache.put(5L, "5");
+
+        assertAll(
+                () -> assertEquals("1", cache.get(1L).get()),
+                () -> assertEquals("2", cache.get(2L).get()),
+                () -> assertEquals("3", cache.get(3L).get()),
+                () -> assertEquals("4", cache.get(4L).get()),
+                () -> assertEquals("5", cache.get(5L).get())
+                );
     }
 
     @Test
-    public void addDataToCacheToTheNumberOfSize_WhenAddOneMoreData_ThenLeastRecentlyDataWillEvict() {
-        ICacheLRUImpl<String, String> lruCache = new ICacheLRUImpl<>(3);
-        lruCache.put("1", "test1");
-        lruCache.put("2", "test2");
-        lruCache.put("3", "test3");
-        lruCache.put("4", "test4");
-        assertFalse(lruCache.get("1").isPresent());
+    public void EvictDataTest() {
+        cache.put(1L, "1");
+        cache.put(2L, "2");
+        cache.put(3L, "3");
+        cache.put(4L, "4");
+        cache.put(5L, "5");
+        assertFalse(cache.get(1L).isPresent());
     }
 
     @Test
-    public void runMultiThreadTask_WhenPutDataInConcurrentToCache_ThenNoDataLost() throws Exception {
-        final int size = 50;
-        final ExecutorService executorService = Executors.newFixedThreadPool(5);
-        ICache<Integer, String> ICache = new ICacheLRUImpl<>(size);
-        CountDownLatch countDownLatch = new CountDownLatch(size);
-        try {
-            IntStream.range(0, size).<Runnable>mapToObj(key -> () -> {
-                ICache.put(key, "value" + key);
-                countDownLatch.countDown();
-            }).forEach(executorService::submit);
-            countDownLatch.await();
-        } finally {
-            executorService.shutdown();
-        }
-        assertEquals(ICache.size(), size);
-        IntStream.range(0, size).forEach(i -> assertEquals("value" + i, ICache.get(i).get()));
+    void updateDataTest() {
+        cache.put(1L, "1");
+        cache.put(2L, "2");
+        cache.put(3L, "3");
+        cache.put(4L, "4");
+        cache.put(5L, "5");
+
+        String expected = "New test - 5";
+        cache.put(1L, expected);
+
+        assertEquals(expected, cache.get(1L).get());
+    }
+
+    @Test
+    void removeDataTest() {
+        cache.put(1L, "1");
+        cache.put(2L, "2");
+        cache.put(3L, "3");
+        cache.put(4L, "4");
+        cache.put(5L, "5");
+
+        cache.remove(1L);
+        assertEquals(Optional.empty(), cache.get(1L));
     }
 }

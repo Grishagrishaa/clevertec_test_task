@@ -4,8 +4,8 @@ import ru.clevertec.clevertecTaskRest.controllers.api.IShopController;
 import ru.clevertec.clevertecTaskRest.controllers.pagination.PageDtos;
 import ru.clevertec.clevertecTaskRest.service.IShopServiceImpl;
 import ru.clevertec.clevertecTaskRest.service.api.IShopService;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadSaleCardDto;
+import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadSaleCardDto;
 import ru.clevertec.clevertecTaskRest.service.dto.Receipt;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -16,12 +16,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("${app.shopController.path}/shop")
-public class Controller implements IShopController {
+public class ShopController implements IShopController {
     private final IShopService shopService;
 
     private final StringBuffer strBuff;
 
-    public Controller(IShopServiceImpl shopService) {
+    public ShopController(IShopServiceImpl shopService) {
         this.shopService = shopService;
         this.strBuff = new StringBuffer();
     }

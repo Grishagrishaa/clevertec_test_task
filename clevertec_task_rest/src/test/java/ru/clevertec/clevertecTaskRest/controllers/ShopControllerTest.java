@@ -36,9 +36,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ReceiptController.class)
+@WebMvcTest(ShopController.class)
 @ExtendWith(SpringExtension.class)
-public class ReceiptControllerTest {
+public class ShopControllerTest {
     @MockBean
     private IShopServiceImpl shopService;
 
@@ -50,7 +50,7 @@ public class ReceiptControllerTest {
 
     private StringBuffer buffer;
 
-    public ReceiptControllerTest() {
+    public ShopControllerTest() {
         this.buffer= new StringBuffer();
     }
 

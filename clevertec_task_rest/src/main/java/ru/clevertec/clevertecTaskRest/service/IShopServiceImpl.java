@@ -5,8 +5,8 @@ import ru.clevertec.clevertecTaskRest.dao.entity.Product;
 import ru.clevertec.clevertecTaskRest.service.api.IProductService;
 import ru.clevertec.clevertecTaskRest.service.api.ISaleCardService;
 import ru.clevertec.clevertecTaskRest.service.api.IShopService;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadSaleCardDto;
+import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadSaleCardDto;
 import ru.clevertec.clevertecTaskRest.service.dto.Receipt;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.convert.ConversionService;
@@ -53,7 +53,7 @@ public class IShopServiceImpl implements IShopService {
     @Override
     @Transactional
     public Receipt getReceipt(List<Long> ids, Long saleCardId) {
-        ArrayList<ReadProductDto> products = buyProducts(ids);
+        List<ReadProductDto> products = buyProducts(ids);
         ru.clevertec.clevertecTaskRest.dao.entity.SaleCard saleCard = saleCardService.getSaleCardById(saleCardId);
 
         double sum = products.stream()
@@ -96,8 +96,8 @@ public class IShopServiceImpl implements IShopService {
     }
 
     @Transactional//connot be private due annotation
-    ArrayList<ReadProductDto> buyProducts(List<Long> ids) {
-        ArrayList<ReadProductDto> products = new ArrayList<>();
+    List<ReadProductDto> buyProducts(List<Long> ids) {
+        List<ReadProductDto> products = new ArrayList<>();
         for (Long id : ids) {
             Product product = productService.getById(id);
 

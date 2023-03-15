@@ -1,8 +1,8 @@
 package ru.clevertec.clevertecTaskRest.service.api;
 
 import ru.clevertec.clevertecTaskRest.controllers.pagination.PageDtos;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadSaleCardDto;
+import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadSaleCardDto;
 import ru.clevertec.clevertecTaskRest.service.dto.Receipt;
 import org.springframework.data.domain.Pageable;
 

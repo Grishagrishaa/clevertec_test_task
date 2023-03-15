@@ -1,10 +1,12 @@
-package ru.clevertec.clevertecTaskRest.service.dto;
+package ru.clevertec.clevertecTaskRest.service.dto.ReadDto;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class ReadProductDto {
     private final Long id;
+    private final LocalDateTime createdDate;
+    private final LocalDateTime updateDate;
     private final String name;
     private final String manufacturer;
     private final LocalDateTime expirationDate;
@@ -12,8 +14,10 @@ public class ReadProductDto {
     private final Double cost;
     private final Long count;
 
-    public ReadProductDto(Long id, String name, String manufacturer, LocalDateTime expirationDate, Integer weight, Double cost, Long count) {
+    public ReadProductDto(Long id, LocalDateTime createdDate, LocalDateTime updateDate, String name, String manufacturer, LocalDateTime expirationDate, Integer weight, Double cost, Long count) {
         this.id = id;
+        this.createdDate = createdDate;
+        this.updateDate = updateDate;
         this.name = name;
         this.manufacturer = manufacturer;
         this.expirationDate = expirationDate;
@@ -24,6 +28,8 @@ public class ReadProductDto {
 
     public ReadProductDto(Builder builder) {
         this.id = builder.id;
+        this.createdDate = builder.createdDate;
+        this.updateDate = builder.updateDate;
         this.name = builder.name;
         this.manufacturer = builder.manufacturer;
         this.expirationDate = builder.expirationDate;
@@ -60,8 +66,18 @@ public class ReadProductDto {
         return count;
     }
 
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
     public static class Builder{
         private Long id;
+        private LocalDateTime createdDate;
+        private LocalDateTime updateDate;
         private String name;
         private String manufacturer;
         private LocalDateTime expirationDate;
@@ -74,6 +90,16 @@ public class ReadProductDto {
 
         public Builder setId(Long id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder setCreatedDate(LocalDateTime createdDate) {
+            this.createdDate = createdDate;
+            return this;
+        }
+
+        public Builder setUpdateDate(LocalDateTime updateDate) {
+            this.updateDate = updateDate;
             return this;
         }
 
