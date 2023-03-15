@@ -1,6 +1,7 @@
 package ru.clevertec.clevertecTaskRest.service.dto;
 
 import ru.clevertec.clevertecTaskRest.dao.entity.SaleCard;
+import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadProductDto;
 
 import java.util.List;
 import java.util.Objects;

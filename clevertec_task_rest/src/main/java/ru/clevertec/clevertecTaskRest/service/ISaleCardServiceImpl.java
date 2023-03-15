@@ -1,11 +1,14 @@
 package ru.clevertec.clevertecTaskRest.service;
 
+import ru.clevertec.clevertecTaskRest.cache.annotations.CacheEvict;
+import ru.clevertec.clevertecTaskRest.cache.annotations.CachePut;
+import ru.clevertec.clevertecTaskRest.cache.annotations.Cacheable;
+import ru.clevertec.clevertecTaskRest.cache.api.ICache;
 import ru.clevertec.clevertecTaskRest.dao.api.ISaleCardRepository;
 import ru.clevertec.clevertecTaskRest.dao.entity.SaleCard;
 import ru.clevertec.clevertecTaskRest.service.api.ISaleCardService;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,12 +27,13 @@ public class ISaleCardServiceImpl implements ISaleCardService {
 
     @Override
     @Transactional
+    @CachePut
     public SaleCard save(SaleCard saleCard) {
         return cardRepository.saveAndFlush(saleCard);
     }
 
     @Override
-    @Cacheable(cacheNames = "saleCard")
+    @Cacheable
     public SaleCard getSaleCardById(Long id) {
         return cardRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("CARD WASN'T FOUND"));
     }
@@ -41,6 +45,7 @@ public class ISaleCardServiceImpl implements ISaleCardService {
 
     @Override
     @Transactional
+    @CachePut
     public SaleCard update(Long id, SaleCard saleCard) {
         SaleCard saleCardFromDb = getSaleCardById(id);
 
@@ -51,6 +56,7 @@ public class ISaleCardServiceImpl implements ISaleCardService {
 
     @Override
     @Transactional
+    @CacheEvict
     public void deleteById(Long id) {
         cardRepository.deleteById(id);
     }

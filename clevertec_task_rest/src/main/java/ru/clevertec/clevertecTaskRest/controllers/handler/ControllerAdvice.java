@@ -51,7 +51,7 @@ public class ControllerAdvice {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(BAD_REQUEST)
     public ErrorMessage handle(ConstraintViolationException e){
-        return new ErrorMessage("Product is out of Stock");
+        return new ErrorMessage(e.getLocalizedMessage());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

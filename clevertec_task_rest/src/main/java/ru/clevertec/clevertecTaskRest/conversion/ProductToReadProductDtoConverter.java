@@ -1,7 +1,7 @@
 package ru.clevertec.clevertecTaskRest.conversion;
 
 import ru.clevertec.clevertecTaskRest.dao.entity.Product;
-import ru.clevertec.clevertecTaskRest.service.dto.ReadProductDto;
+import ru.clevertec.clevertecTaskRest.service.dto.ReadDto.ReadProductDto;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -9,15 +9,17 @@ import org.springframework.stereotype.Component;
 public class ProductToReadProductDtoConverter implements Converter<Product, ReadProductDto> {
 
     @Override
-    public ReadProductDto convert(Product s) {
+    public ReadProductDto convert(Product product) {
         return ReadProductDto.Builder.create()
-                .setId(s.getId())
-                .setName(s.getName())
-                .setManufacturer(s.getManufacturer())
-                .setWeight(s.getWeight())
-                .setExpirationDate(s.getExpirationDate())
-                .setCost(s.getCost())
-                .setCount(s.getCount())
+                .setId(product.getId())
+                .setCreatedDate(product.getCreatedDate())
+                .setUpdateDate(product.getUpdatedDate())
+                .setName(product.getName())
+                .setManufacturer(product.getManufacturer())
+                .setWeight(product.getWeight())
+                .setExpirationDate(product.getExpirationDate())
+                .setCost(product.getCost())
+                .setCount(product.getCount())
                 .build();
     }
 }

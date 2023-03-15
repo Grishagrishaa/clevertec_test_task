@@ -2,13 +2,15 @@ package ru.clevertec.clevertecTaskRest.dao.entity;
 
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)// CANT BE USED DURING TESTS IN H2 DB
+    @GeneratedValue(strategy = GenerationType.IDENTITY)// CANT BE USED DURING TESTS IN H2 DB
     private Long id;
     @CreatedDate
     private LocalDateTime createdDate;

@@ -1,14 +1,16 @@
 package ru.clevertec.clevertecTaskRest.service;
 
 import org.springframework.validation.annotation.Validated;
+import ru.clevertec.clevertecTaskRest.cache.annotations.CacheEvict;
+import ru.clevertec.clevertecTaskRest.cache.annotations.CachePut;
+import ru.clevertec.clevertecTaskRest.cache.annotations.Cacheable;
+import ru.clevertec.clevertecTaskRest.cache.api.ICache;
 import ru.clevertec.clevertecTaskRest.dao.api.IProductRepository;
 import ru.clevertec.clevertecTaskRest.dao.entity.Product;
 import ru.clevertec.clevertecTaskRest.service.api.IProductService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
-import org.springframework.cache.annotation.*;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,27 +30,27 @@ public class IProductServiceImpl implements IProductService {
 
     @Override
     @Transactional
-    @CachePut(cacheNames = "product")
+    @CachePut
     public Product save(@Valid Product product) {
         return productRepository.saveAndFlush(product);
     }
 
     @Override
-    @Cacheable(cacheNames="product")
+    @Cacheable
     public Product getById(Long id) {
         return productRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("PRODUCT WAS NOT FOUND"));
     }
 
     @Override
-//    @Cacheable(cacheNames="product")
     public Page<Product> getAll(Pageable pageable) {
         if(pageable.getPageSize() == 0) return Page.empty();
+
         return productRepository.findAll(pageable);
     }
 
     @Override
-    @CachePut(cacheNames="product")
     @Transactional
+    @CachePut
     public Product update(Long id, @Valid Product product) {
         Product productFromDb = getById(id);
 
@@ -59,10 +61,8 @@ public class IProductServiceImpl implements IProductService {
 
     @Override
     @Transactional
-    @CacheEvict(cacheNames="product")
+    @CacheEvict
     public void deleteById(Long id) {
         productRepository.deleteById(id);
     }
-
-
 }

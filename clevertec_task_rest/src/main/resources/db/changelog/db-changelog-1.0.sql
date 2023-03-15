@@ -3,7 +3,7 @@
 --changeset grisha:1
 CREATE TABLE IF NOT EXISTS shop.product
 (
-    id bigint,
+    id bigserial,
     created_date timestamp(6) without time zone,
     updated_date timestamp(6) without time zone,
     cost integer,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS shop.product
 --changeset grisha:2
 CREATE TABLE IF NOT EXISTS shop.sale_card
 (
-    id bigint,
+    id bigserial,
     created_date timestamp(6) without time zone,
     updated_date timestamp(6) without time zone,
     sale_percentage integer,
@@ -29,12 +29,8 @@ CREATE TABLE IF NOT EXISTS shop.sale_card
 );
 
 
---changeset grisha:3
-CREATE SEQUENCE "PRODUCT_SEQ"
-    MINVALUE 9
-    MAXVALUE 999999999
-    INCREMENT BY 50
-    START WITH 202700;
+
+
 
 
 
