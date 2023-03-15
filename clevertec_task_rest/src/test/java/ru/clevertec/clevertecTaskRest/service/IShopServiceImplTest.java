@@ -56,7 +56,7 @@ class IShopServiceImplTest {
         @ParameterizedTest
         @MethodSource("ru.clevertec.clevertecTaskRest.service.IShopServiceImplTest#provideProductsList")
         void shouldReturnReceiptWithExistedProductsId(List<Product> testProducts){
-            mockUpdateMethod(testProducts);
+            mockUpdateMethods(testProducts);
 
             Receipt actualReceipt = Receipt.Builder.create()
                     .setProductDtos(testProducts.stream().map(ProductBuilder::convertToDto).toList())
@@ -70,7 +70,7 @@ class IShopServiceImplTest {
         @ParameterizedTest
         @MethodSource("ru.clevertec.clevertecTaskRest.service.IShopServiceImplTest#provideProductsListAndSaleCard")
         void shouldReturnReceiptWithExistedProductsIdAndSaleCard(List<Product> testProducts, SaleCard saleCard){
-            mockUpdateMethod(testProducts);
+            mockUpdateMethods(testProducts);
             doReturn(saleCard).when(saleCardService).getSaleCardById(saleCard.getId());
 
             Receipt actualReceipt = Receipt.Builder.create()
@@ -113,7 +113,7 @@ class IShopServiceImplTest {
         }
     }
 
-    private void mockUpdateMethod(List<Product> testProducts) {
+    private void mockUpdateMethods(List<Product> testProducts) {
         testProducts.forEach(
                 productStub -> {
                     doReturn(productStub)

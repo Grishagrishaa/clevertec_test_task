@@ -34,7 +34,7 @@ public final class TestUtils {
 
 
     public static double getRandomDouble(){
-        return getRandomDouble(Double.MAX_VALUE);
+        return getRandomDouble(100.00);
     }
 
     public static double getRandomDouble(double bound){

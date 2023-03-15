@@ -1,23 +1,32 @@
-package ru.clevertec.clevertecTaskRest.service.dto.ReadDto;
+package ru.clevertec.clevertecTaskRest.service.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import ru.clevertec.clevertecTaskRest.json.annotations.JsonElement;
+import ru.clevertec.clevertecTaskRest.json.annotations.JsonSerializable;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@JsonSerializable
 public class ReadProductDto {
+    @JsonElement
     private final Long id;
-    private final LocalDateTime createdDate;
-    private final LocalDateTime updateDate;
+    @JsonElement
     private final String name;
+    @JsonElement
     private final String manufacturer;
+    @JsonElement
+    @JsonIgnore
     private final LocalDateTime expirationDate;
+    @JsonElement
     private final Integer weight;
+    @JsonElement
     private final Double cost;
+    @JsonElement
     private final Long count;
 
-    public ReadProductDto(Long id, LocalDateTime createdDate, LocalDateTime updateDate, String name, String manufacturer, LocalDateTime expirationDate, Integer weight, Double cost, Long count) {
+    public ReadProductDto(Long id, String name, String manufacturer, LocalDateTime expirationDate, Integer weight, Double cost, Long count) {
         this.id = id;
-        this.createdDate = createdDate;
-        this.updateDate = updateDate;
         this.name = name;
         this.manufacturer = manufacturer;
         this.expirationDate = expirationDate;
@@ -28,8 +37,6 @@ public class ReadProductDto {
 
     public ReadProductDto(Builder builder) {
         this.id = builder.id;
-        this.createdDate = builder.createdDate;
-        this.updateDate = builder.updateDate;
         this.name = builder.name;
         this.manufacturer = builder.manufacturer;
         this.expirationDate = builder.expirationDate;
@@ -66,18 +73,8 @@ public class ReadProductDto {
         return count;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public LocalDateTime getUpdateDate() {
-        return updateDate;
-    }
-
     public static class Builder{
         private Long id;
-        private LocalDateTime createdDate;
-        private LocalDateTime updateDate;
         private String name;
         private String manufacturer;
         private LocalDateTime expirationDate;
@@ -90,16 +87,6 @@ public class ReadProductDto {
 
         public Builder setId(Long id) {
             this.id = id;
-            return this;
-        }
-
-        public Builder setCreatedDate(LocalDateTime createdDate) {
-            this.createdDate = createdDate;
-            return this;
-        }
-
-        public Builder setUpdateDate(LocalDateTime updateDate) {
-            this.updateDate = updateDate;
             return this;
         }
 
@@ -139,6 +126,7 @@ public class ReadProductDto {
         public ReadProductDto build(){
             return new ReadProductDto(this);
         }
+
     }
 
     @Override

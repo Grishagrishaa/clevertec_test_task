@@ -1,28 +1,28 @@
-package ru.clevertec.clevertecTaskRest.service.dto.ReadDto;
+package ru.clevertec.clevertecTaskRest.service.dto;
 
 
-import java.time.LocalDateTime;
+import ru.clevertec.clevertecTaskRest.json.annotations.JsonElement;
+import ru.clevertec.clevertecTaskRest.json.annotations.JsonSerializable;
+
 import java.util.Objects;
 
+@JsonSerializable
 public class ReadSaleCardDto {
+    @JsonElement
     private final Long id;
-    private final LocalDateTime createdDate;
-    private final LocalDateTime updateDate;
+    @JsonElement
     private final Long year;
+    @JsonElement
     private final Integer salePercentage;
 
-    public ReadSaleCardDto(Long id, LocalDateTime createdDate, LocalDateTime updateDate, Long year, Integer salePercentage) {
+    public ReadSaleCardDto(Long id, Long year, Integer salePercentage) {
         this.id = id;
-        this.createdDate = createdDate;
-        this.updateDate = updateDate;
         this.year = year;
         this.salePercentage = salePercentage;
     }
 
     public ReadSaleCardDto(Builder builder) {
         this.id = builder.id;
-        this.createdDate = builder.createdDate;
-        this.updateDate = builder.updateDate;
         this.year = builder.year;
         this.salePercentage = builder.salePercentage;
     }
@@ -31,27 +31,16 @@ public class ReadSaleCardDto {
         return id;
     }
 
+    public Long getYear() {
+        return year;
+    }
 
     public Integer getSalePercentage() {
         return salePercentage;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public LocalDateTime getUpdateDate() {
-        return updateDate;
-    }
-
-    public Long getYear() {
-        return year;
-    }
-
     public static class Builder{
         private  Long id;
-        private LocalDateTime createdDate;
-        private LocalDateTime updateDate;
         private Long year;
         private Integer salePercentage;
 
@@ -60,16 +49,6 @@ public class ReadSaleCardDto {
 
         public Builder setId(Long id) {
             this.id = id;
-            return this;
-        }
-
-        public Builder setCreatedDate(LocalDateTime createdDate) {
-            this.createdDate = createdDate;
-            return this;
-        }
-
-        public Builder setUpdateDate(LocalDateTime updateDate) {
-            this.updateDate = updateDate;
             return this;
         }
 
