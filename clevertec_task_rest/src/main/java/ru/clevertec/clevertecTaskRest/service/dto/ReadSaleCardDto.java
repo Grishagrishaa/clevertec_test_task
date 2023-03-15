@@ -1,11 +1,18 @@
 package ru.clevertec.clevertecTaskRest.service.dto;
 
 
+import ru.clevertec.clevertecTaskRest.json.annotations.JsonElement;
+import ru.clevertec.clevertecTaskRest.json.annotations.JsonSerializable;
+
 import java.util.Objects;
 
+@JsonSerializable
 public class ReadSaleCardDto {
+    @JsonElement
     private final Long id;
+    @JsonElement
     private final Long year;
+    @JsonElement
     private final Integer salePercentage;
 
     public ReadSaleCardDto(Long id, Long year, Integer salePercentage) {
@@ -24,7 +31,7 @@ public class ReadSaleCardDto {
         return id;
     }
 
-    public Long getNumber() {
+    public Long getYear() {
         return year;
     }
 

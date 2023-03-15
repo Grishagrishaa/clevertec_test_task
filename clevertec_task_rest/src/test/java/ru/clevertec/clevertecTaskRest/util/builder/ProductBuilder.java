@@ -22,12 +22,7 @@ public class ProductBuilder {
     private Double cost;
     private Long count;
 
-    public ProductBuilder(Long id,
-                          LocalDateTime createdDate, LocalDateTime updatedDate,
-                          String name, String manufacturer,
-                          LocalDateTime expirationDate,
-                          Integer weight, Double cost,
-                          Long count) {
+    public ProductBuilder() {
         this.id = 1L;
         this.createdDate = LocalDateTime.MIN;
         this.updatedDate = LocalDateTime.MIN;

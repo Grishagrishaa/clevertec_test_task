@@ -2,12 +2,19 @@ package ru.clevertec.clevertecTaskRest.service.dto;
 
 import ru.clevertec.clevertecTaskRest.dao.entity.SaleCard;
 
+import ru.clevertec.clevertecTaskRest.json.annotations.JsonElement;
+import ru.clevertec.clevertecTaskRest.json.annotations.JsonSerializable;
+
 import java.util.List;
 import java.util.Objects;
 
+@JsonSerializable
 public class Receipt {
-    private final List<ReadProductDto> products;
+    @JsonElement
     private final Double totalSum;
+    @JsonElement
+    private final List<ReadProductDto> products;
+
 
     public Receipt(List<ReadProductDto> products, Double totalSum) {
         this.products = products;
@@ -63,19 +70,19 @@ public class Receipt {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Receipt receipt = (Receipt) o;
-        return Objects.equals(products, receipt.products) && Objects.equals(totalSum, receipt.totalSum);
+        return Objects.equals(totalSum, receipt.totalSum) && Objects.equals(products, receipt.products);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(products, totalSum);
+        return Objects.hash(totalSum, products);
     }
 
     @Override
     public String toString() {
         return "Receipt{" +
-                "products=" + products +
-                ", totalSum=" + totalSum +
+                "totalSum=" + totalSum +
+                ", products=" + products +
                 '}';
     }
 }
